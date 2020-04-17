@@ -1,5 +1,6 @@
 import requests
 import re
+import CF
 
 def ExtractParticipantInfo(ID):
 	"""
@@ -32,12 +33,14 @@ def ExtractParticipantInfo(ID):
 
 	Tasks = [k + LEN for k in range(len(Text)) if Text[k:k + LEN] == Task_Code]
 
+	Years = []
+
 	for task in Tasks:
 		Year = None
 		try:
 			Year = int(Text[task : task + 4])
 		except:
-			pass
+			continue
 
 		Name = Text[task + 5 : task + Text[task:].find('\"')]
 		Score = None
@@ -45,18 +48,59 @@ def ExtractParticipantInfo(ID):
 		try:
 			Score = float(Text[task + Text[task:].find('>') + 1 : task + Text[task:].find('<')])
 		except:
-			pass
+			continue
 
 		sYear = str(Year)
+
+		Years.append(Year)
 
 		if not(sYear in Info["Tasks"]):
 			Info["Tasks"][sYear] = {}
 
 		Info["Tasks"][sYear][Name] = Score
 
-	if None in Info["Tasks"]:
-		del Info["Tasks"][None]
-		
+	Years = list(set(Years))
+	Years.sort(reverse = True)
+	Rank_Code = ['class=\"gold\">','class=\"silver\">','class=\"bronze\">']
+	LEN1 = len(Rank_Code[0])
+	LEN2 = len(Rank_Code[1])
+
+	#Most Probably no medal strings
+	No_Medal = re.findall('>\d\d\d/\d\d\d<',Text)
+
+	Ranks = [k for k in range(len(Text)) if (Text[k:k+LEN1] in Rank_Code or Text[k:k+LEN2] in Rank_Code)]
+	_index = 0
+
+	Info['Results'] = {}
+
+	Used = set()
+
+	for rank in Ranks:
+		_rank = rank + Text[rank:].find('>') + 1
+		if Text[_rank:].find('/') < Text[_rank:].find('<'):
+			assert(_index < len(Years))
+			Used.add(Text[_rank : _rank + Text[_rank:].find('<')])
+			try:
+				val = int(Text[_rank:_rank + Text[_rank:].find('/')])
+			except:
+				continue
+			Info['Results'][str(Years[_index])] = val
+			_index += 1
+
+	for rank in No_Medal:
+		_rank = rank[1:-1]
+		if not (_rank in Used):
+			assert(_index < len(Years))
+			Info['Results'][str(Years[_index])] = int(_rank[0:3])
+			_index += 1
+
+	Info['Rating'] = {}
+
+
+	if Info['CF Handle'] != None:
+		for Year in Years:
+			Info['Rating'][str(Year)] = CF.BeforeRating(Info['CF Handle'],Year = Year)
+
 	return Info
 
 def ExtractParticipantsIDs(Year):

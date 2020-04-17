@@ -8,7 +8,7 @@ def LatestHandle(Handle):
 	"""
 	Returns the lastest version of the user associated previously with handle Handle
 	"""
-	time.sleep(1)
+	time.sleep(0.2)
 	UNQ_STR = 'https://codeforces.com/profile/'
 	Url = requests.get(UNQ_STR + Handle).url
 	return Url[len(UNQ_STR) : ]
