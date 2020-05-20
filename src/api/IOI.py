@@ -7,10 +7,11 @@ def ExtractParticipantInfo(ID):
 	Returns a dictionary containing participant's CodeForcer (CF) Handle if
 	it exists, otherwise set to None, the full Name of the participant and
 	all the scores from every year he or she participated under the format
-	dict["Tasks"][Year][Name of task].
+	dict["Tasks"][Year][Name of task]. The participant is defined by their
+	id `ID` with at most 5 digits.
 	"""
 
-	Info = {"CF Handle" : None, "Name" : None, "Tasks" : {}, "Results" : {}}
+	Info = {"CF Handle" : None, "Name" : None, "Tasks" : {}, "Results" : {}, 'Rating' : {}}
 
 	Cf_profile = 'codeforces.com/profile/'
 	Pa_name = '\"participantname\"'
@@ -28,86 +29,60 @@ def ExtractParticipantInfo(ID):
 		Right = Left + Text[Left:].find('</div>')
 		Info["Name"] = Text[Left : Right]
 
+	Ol_code = 'olympiads/'
+	Ol_len = len(Ol_code)
+
 	Task_Code = '\"tasks/'
-	LEN = len(Task_Code)
+	Task_len = len(Task_Code)
 
-	Tasks = [k + LEN for k in range(len(Text)) if Text[k:k + LEN] == Task_Code]
+	Olympiads = [x.span()[0] for x in re.finditer(Ol_code + '\d\d\d\d\"',Text)]
+	Olympiads.append(len(Text))
 
-	Years = []
+	for ol in range(len(Olympiads) - 1):
 
-	for task in Tasks:
+		Left,Right = Olympiads[ol],Olympiads[ol+1]
+
 		Year = None
-		try:
-			Year = int(Text[task : task + 4])
-		except:
-			continue
-
-		Name = Text[task + 5 : task + Text[task:].find('\"')]
-		Score = None
 
 		try:
-			Score = float(Text[task + Text[task:].find('>') + 1 : task + Text[task:].find('<')])
+			Year = int(Text[Left + Ol_len : Left + Ol_len + 4])
 		except:
 			continue
 
 		sYear = str(Year)
 
-		Years.append(Year)
+		Info['Tasks'][sYear] = {}
 
-		if not(sYear in Info["Tasks"]):
-			Info["Tasks"][sYear] = {}
+		Tasks = [Left + x.span()[1] for x in re.finditer(Task_Code + sYear + '/',Text[Left : Right])]
+		
+		for task in Tasks:
 
-		Info["Tasks"][sYear][Name] = Score
+			Name = Text[task : task + Text[task:].find('\"')]
+			Score = None
 
-	Years = list(set(Years))
-	Years.sort(reverse = True)
-	Rank_Code = ['class=\"gold\">','class=\"silver\">','class=\"bronze\">']
-	LEN1 = len(Rank_Code[0])
-	LEN2 = len(Rank_Code[1])
-
-	#Most Probably no medal strings
-	No_Medal = re.findall('>\d\d\d/\d\d\d<',Text)
-
-	Ranks = [k for k in range(len(Text)) if (Text[k:k+LEN1] in Rank_Code or Text[k:k+LEN2] in Rank_Code)]
-	_index = 0
-
-	Info['Results'] = {}
-
-	Used = set()
-
-	for rank in Ranks:
-		_rank = rank + Text[rank:].find('>') + 1
-		if Text[_rank:].find('/') < Text[_rank:].find('<'):
-			assert(_index < len(Years))
-			Used.add(Text[_rank : _rank + Text[_rank:].find('<')])
 			try:
-				val = int(Text[_rank:_rank + Text[_rank:].find('/')])
+				Score = float(Text[task + Text[task:].find('>') + 1 : task + Text[task:].find('<')])
 			except:
 				continue
-			Info['Results'][str(Years[_index])] = val
-			_index += 1
 
-	for rank in No_Medal:
-		_rank = rank[1:-1]
-		if not (_rank in Used):
-			assert(_index < len(Years))
-			Info['Results'][str(Years[_index])] = int(_rank[0:3])
-			_index += 1
+			Info["Tasks"][sYear][Name] = Score
 
-	Info['Rating'] = {}
+		if not Info['Tasks'][sYear]:
+			del Info['Tasks'][sYear]
+		#len(Ranks) <= 1
+		Ranks = re.findall('>\d\d\d/\d\d\d<',Text[Left:Right]) + re.findall('>\d\d/\d\d\d<',Text[Left:Right]) + re.findall('>\d/\d\d\d<',Text[Left:Right])
+		for rank in Ranks:
+			Info['Results'][sYear] = int(rank[1:rank.find('/')])
 
-
-	if Info['CF Handle'] != None:
-		for Year in Years:
-			Info['Rating'][str(Year)] = CF.BeforeRating(Info['CF Handle'],Year = Year)
+		if Year >= 2005 and Info['CF Handle'] != None:
+			Info['Rating'][sYear] = CF.RatingBefore(Handle = Info['CF Handle'],Year = Year)
 
 	return Info
 
 def ExtractParticipantsIDs(Year):
 	"""
-	Extracts the IDs of all the participants of IOI in the year 'year'.
-	Returns as a list of strings with 4 digits. All the IDs have at most 4
-	digits.
+	Extracts the IDs of all the participants of IOI in the year `Year`.
+	Returns as a list of strings with at most 5 digits.
 	"""
 	Text = requests.get("https://stats.ioinformatics.org/results/" + str(Year)).text
 	IDs_5 = re.findall('href="people/\d\d\d\d\d\"',Text)

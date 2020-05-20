@@ -6,26 +6,34 @@ import Constants
 
 def LatestHandle(Handle):
 	"""
-	Returns the lastest version of the user associated previously with handle Handle
+	Returns the lastest version of the user associated previously with handle 
+	`Handle`
 	"""
 	time.sleep(0.2)
 	UNQ_STR = 'https://codeforces.com/profile/'
-	Url = requests.get(UNQ_STR + Handle).url
-	return Url[len(UNQ_STR) : ]
+	try:
+		Url = requests.get(UNQ_STR + Handle).url
+		return Url[len(UNQ_STR) : ]
+	except:
+		return Handle
 
 def RatingBefore(Handle,Time = None,Year = None):
 	"""
-	Finds the rating of User with handle 'Handle' before time 'Time', given in epoch counters.
-	If Year is not None then we set Time to be the starting of IOI on year 'Year'
+	Finds the rating of User with handle `Handle` before time `Time` 
+	given in epoch counters. If `Year` is not None then we set `Time`
+	to be the starting of IOI on year `Year`
 	"""
 	if Year != None:
 		Time = Constants.IOI[str(Year)]
 	Handle = LatestHandle(Handle)
 	data = None
-	data = requests.get('https://codeforces.com/api/user.rating?handle=' + Handle).json()
+	time.sleep(0.2)
+	try:
+		data = requests.get('https://codeforces.com/api/user.rating?handle=' + Handle).json()
+	except:
+		return None
 	if data['status'] == 'FAILED':
 		return None
-	print('Success: ',Handle)
 	Rating = 1500
 	for Contest in data['result']:
 		Time_ = int(Contest['ratingUpdateTimeSeconds'])
@@ -39,7 +47,7 @@ def RatingBefore(Handle,Time = None,Year = None):
 
 def GetHandlesInfo(Handles):
 	"""
-	Returns the information related to the handles in list 'Handles'.
+	Returns the information related to the handles in list `Handles`.
 	The list should have the len between 1 and 10000. Returns a list
 	for every handle a dictionary containing the 'Name', 'Rating',
 	'maxRating', 'CF Handle', 'Rank', 'maxRank'.
@@ -52,6 +60,7 @@ def GetHandlesInfo(Handles):
 		sHandles += str(LatestHandle(Handles[k]))
 		if k + 1 < len(Handles):
 			sHandles += ';'
+	time.sleep(0.2)
 	data = requests.get('https://codeforces.com/api/user.info?handles=' + sHandles).json()
 	if not('status' in data) or data['status'] != 'OK':
 		return None
@@ -73,10 +82,12 @@ def ContestStandings(contestId,Start,End,Room = None,showUnofficial = False):
 	starting with position 'Start' and ending in 'End', with optional filters such as
 	Room, (None if filter if off) and showUnofficial (False if filter is off).
 	"""
+	time.sleep(0.2)
 	data = requests.get('https://codeforces.com/api/contest.standings?contestId=' + str(contestId) \
 						+ '&from=' + str(Start) + '&count=' + str(End-Start+1) + ('' if not Room else '&room=' + str(Room)) \
 						+ '&showUnofficial=' + str(showUnofficial).lower()).json()
 	if data['status'] != 'OK':
+		print(data['status'],contestId)
 		return None
 	data = data['result']
 	Info = {}
@@ -85,18 +96,18 @@ def ContestStandings(contestId,Start,End,Room = None,showUnofficial = False):
 		'Name' : data['contest']['name'],
 		'Duration' : data['contest']['durationSeconds'],
 	}
-	Info['Problems'] = {}
+	Info['Problems'] = []
 	Info['Standings'] = {}
 	LEN = len(data['problems'])
 	for problem in range(LEN):
-		Info['Problems'][problem] = {
+		Info['Problems'].append({
 			'ConstestId' : data['problems'][problem]['contestId'],
 			'Index' : data['problems'][problem]['index'],
 			'Name' : data['problems'][problem]['name'],
 			'Points' : data['problems'][problem]['points'],
-			'Rating' : data['problems'][problem]['rating'],
+			'Rating' : None if 'rating' not in data['problems'][problem] else data['problems'][problem]['rating'],
 			'Tags' : data['problems'][problem]['tags']
-		}
+		})
 	for Contestant in range(len(data['rows'])):
 		if len(data['rows'][Contestant]['party']['members']) == 1:
 			Info['Standings'][data['rows'][Contestant]['party']['members'][0]['handle']] = {
@@ -108,9 +119,10 @@ def ContestStandings(contestId,Start,End,Room = None,showUnofficial = False):
 
 def ContestsList(Gym = False):
 	"""
-	Returns the list with all CF contests, including Gym contests if 'Gym' is true
+	Returns the list with all CF contests, including Gym contests if `Gym` is true
 	The returned dictionary contains for every problem, 'Name', 'Duration' and 'Time'
 	"""
+	time.sleep(0.2)
 	data = requests.get('https://codeforces.com/api/contest.list?gym=' + str(Gym).lower()).json()
 	if data['status'] != 'OK':
 		return None
@@ -128,7 +140,7 @@ def ContestsList(Gym = False):
 
 def ProblemsList(Tags = None):
 	"""
-	Returns the list of problems filtered by list Tags (filter is off if Tags = None).
+	Returns the list of problems filtered by list `Tags` (filter is off if `Tags` = None).
 	The returned dictionary contains for every problem, 'contestId', 'Index', 'Name',
 	'Points', 'Rating', 'Tags', 'solvedCount'
 	"""
@@ -139,6 +151,7 @@ def ProblemsList(Tags = None):
 			sTags += tag
 			sTags += ';'
 		sTags = sTags[:-1]
+	time.sleep(0.2)
 	data = requests.get('https://codeforces.com/api/problemset.problems' + sTags).json()
 	if data['status'] != 'OK':
 		return None
