@@ -20,7 +20,7 @@ type BlogEntry struct {
 	Locale                  string `json:"locale"`
 	ModificationTimeSeconds int    `json:"modificationTimeSeconds"`
 	AllowViewHistory        bool   `json:"allowViewHistory"`
-	Tags                    string `json:"tags"`
+	Tags                    []string `json:"tags"`
 	Rating                  int    `json:"rating"`
 }
 
@@ -230,7 +230,7 @@ type RequestRecentStatus struct {
 	Result   []Submission `json:"result"`
 }
 
-type RequstRecentActions struct {
+type RequestRecentActions struct {
 	Status   string         `json:"status"`
 	Comment_ string         `json:"comment"`
 	Result   []RecentAction `json:"result"`
