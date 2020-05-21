@@ -3,7 +3,7 @@ package api
 type Comment struct {
 	Id                  int    `json:"id"`
 	CreationTimeSeconds int    `json:"creationTimeSeconds"`
-	CommentatorHandle   int    `json:"commentatorHandle"`
+	CommentatorHandle   string `json:"commentatorHandle"`
 	Locale              string `json:"locale"`
 	Text                string `json:"text"`
 	ParentCommentId     int    `json:"parentCommentId"`
@@ -11,17 +11,17 @@ type Comment struct {
 }
 
 type BlogEntry struct {
-	Id                      int    `json:"id"`
-	OriginalLocale          string `json:"originalLocale"`
-	CreationTimeSeconds     int    `json:"creationTimeSeconds"`
-	AuthorHandle            string `json:"authorHandle"`
-	Title                   string `json:"title"`
-	Content                 string `json:"content"`
-	Locale                  string `json:"locale"`
-	ModificationTimeSeconds int    `json:"modificationTimeSeconds"`
-	AllowViewHistory        bool   `json:"allowViewHistory"`
+	Id                      int      `json:"id"`
+	OriginalLocale          string   `json:"originalLocale"`
+	CreationTimeSeconds     int      `json:"creationTimeSeconds"`
+	AuthorHandle            string   `json:"authorHandle"`
+	Title                   string   `json:"title"`
+	Content                 string   `json:"content"`
+	Locale                  string   `json:"locale"`
+	ModificationTimeSeconds int      `json:"modificationTimeSeconds"`
+	AllowViewHistory        bool     `json:"allowViewHistory"`
 	Tags                    []string `json:"tags"`
-	Rating                  int    `json:"rating"`
+	Rating                  int      `json:"rating"`
 }
 
 type User struct {
@@ -48,8 +48,8 @@ type User struct {
 
 type RecentAction struct {
 	TimeSeconds int       `json:"timeSeconds"`
-	BlogEntry_  BlogEntry `json:"blogEntry"`
-	Comment_    Comment   `json:"comment"`
+	BlogEntryv  BlogEntry `json:"blogEntry"`
+	Commentv    Comment   `json:"comment"`
 }
 
 type RatingChange struct {
@@ -65,7 +65,7 @@ type RatingChange struct {
 type Contest struct {
 	Id                  int    `json:"id"`
 	Name                string `json:"name"`
-	Type_               string `json:"type"`
+	Typev               string `json:"type"`
 	Phase               string `json:"phase"`
 	Frozen              bool   `json:"frozen"`
 	DurationSeconds     int    `json:"durationSeconds"`
@@ -98,14 +98,14 @@ type Party struct {
 }
 
 type Problem struct {
-	ContestId      int      `json:"contestId"`
-	ProblemsetName string   `json:"problemsetName"`
-	Index          string   `json:"index"`
-	Name           string   `json:"name"`
-	Type_          string   `json:"type"`
-	Points         float64  `json:"points"`
-	Rating         int      `json:"rating"`
-	Tags           []string `json:"tags"`
+	ContestId int      `json:"contestId"`
+	PsetName  string   `json:"problemsetName"`
+	Index     string   `json:"index"`
+	Name      string   `json:"name"`
+	Typev     string   `json:"type"`
+	Points    float64  `json:"points"`
+	Rating    int      `json:"rating"`
+	Tags      []string `json:"tags"`
 }
 
 type ProblemStatistics struct {
@@ -119,7 +119,7 @@ type Submission struct {
 	ContestId           int     `json:"contestId"`
 	CreationTimeSeconds int     `json:"creationTimeSeconds"`
 	RelativeTimeSeconds int     `json:"relativeTimeSeconds"`
-	Problem_            Problem `json:"problem"`
+	Problemv            Problem `json:"problem"`
 	Author              Party   `json:"author"`
 	ProgrammingLanguage string  `json:"programmingLanguage"`
 	Verdict             string  `json:"verdict"`
@@ -130,7 +130,7 @@ type Submission struct {
 }
 
 type JProtocol struct {
-	Manual   bool   `json:"manual"`
+	Manual   string `json:"manual"`
 	Protocol string `json:"protocol"`
 	Verdict  string `json:"verdict"`
 }
@@ -141,13 +141,13 @@ type Hack struct {
 	Hacker              Party     `json:"hacker"`
 	Defender            Party     `json:"defender"`
 	Verdict             string    `json:"verdict"`
-	Problem_            Problem   `json:"problem"`
+	Problemv            Problem   `json:"problem"`
 	Test                string    `json:"test"`
 	JudgeProtocol       JProtocol `json:"judgeProtocol"`
 }
 
 type RanklistRow struct {
-	Party_                    Party           `json:"party"`
+	Partyv                    Party           `json:"party"`
 	Rank                      int             `json:"rank"`
 	Points                    float64         `json:"points"`
 	Penalty                   int             `json:"penalty"`
@@ -161,12 +161,12 @@ type ProblemResult struct {
 	Points                    float64 `json:"points"`
 	Penalty                   int     `json:"penalty"`
 	RejectedAttemptCount      int     `json:"rejectedAttemptCount"`
-	Type_                     string  `json:"type"`
+	Typev                     string  `json:"type"`
 	BestSubmissionTimeSeconds int     `json:"bestSubmissionTimeSeconds"`
 }
 
 type ContestStandings struct {
-	Contest_ Contest       `json:"contest"`
+	Contestv Contest       `json:"contest"`
 	Problems []Problem     `json:"problems"`
 	Rows     []RanklistRow `json:"rows"`
 }
@@ -178,90 +178,90 @@ type ProblemsetProblems struct {
 
 type RequestComments struct {
 	Status   string    `json:"status"`
-	Comment_ string    `json:"comment"`
+	Commentv string    `json:"comment"`
 	Result   []Comment `json:"result"`
 }
 
 type RequestBlog struct {
 	Status   string    `json:"status"`
-	Comment_ string    `json:"comment"`
+	Commentv string    `json:"comment"`
 	Result   BlogEntry `json:"result"`
 }
 
 type RequestHacks struct {
 	Status   string `json:"status"`
-	Comment_ string `json:"comment"`
+	Commentv string `json:"comment"`
 	Result   []Hack `json:"result"`
 }
 
 type RequestContests struct {
 	Status   string    `json:"status"`
-	Comment_ string    `json:"comment"`
+	Commentv string    `json:"comment"`
 	Result   []Contest `json:"result"`
 }
 
 type RequestRatingChange struct {
 	Status   string         `json:"status"`
-	Comment_ string         `json:"comment"`
+	Commentv string         `json:"comment"`
 	Result   []RatingChange `json:"result"`
 }
 
 type RequestContestStandings struct {
 	Status   string           `json:"status"`
-	Comment_ string           `json:"comment"`
+	Commentv string           `json:"comment"`
 	Result   ContestStandings `json:"result"`
 }
 
 type RequestContestStatus struct {
 	Status   string       `json:"status"`
-	Comment_ string       `json:"comment"`
+	Commentv string       `json:"comment"`
 	Result   []Submission `json:"result"`
 }
 
 type RequestPsetProblems struct {
 	Status   string            `json:"status"`
-	Comment_ string            `json:"comment"`
+	Commentv string            `json:"comment"`
 	Result   ProblemStatistics `json:"result"`
 }
 
 type RequestRecentStatus struct {
 	Status   string       `json:"status"`
-	Comment_ string       `json:"comment"`
+	Commentv string       `json:"comment"`
 	Result   []Submission `json:"result"`
 }
 
 type RequestRecentActions struct {
 	Status   string         `json:"status"`
-	Comment_ string         `json:"comment"`
+	Commentv string         `json:"comment"`
 	Result   []RecentAction `json:"result"`
 }
 
 type RequestBlogEntries struct {
 	Status   string      `json:"status"`
-	Comment_ string      `json:"comment"`
+	Commentv string      `json:"comment"`
 	Result   []BlogEntry `json:"result"`
 }
 
 type RequestUserInfo struct {
 	Status   string `json:"status"`
-	Comment_ string `json:"comment"`
+	Commentv string `json:"comment"`
 	Result   []User `json:"result"`
 }
 
 type RequestRatedList struct {
 	Status   string `json:"status"`
-	Comment_ string `json:"comment"`
+	Commentv string `json:"comment"`
 	Result   []User `json:"result"`
 }
 
 type RequestUserRating struct {
 	Status   string         `json:"status"`
-	Comment_ string         `json:"comment"`
+	Commentv string         `json:"comment"`
 	Result   []RatingChange `json:"result"`
 }
 
 type RequestUserStatus struct {
 	Status   string       `json:"status"`
-	Comment_ string       `json:"comment"`
+	Commentv string       `json:"comment"`
 	Result   []Submission `json:"result"`
 }

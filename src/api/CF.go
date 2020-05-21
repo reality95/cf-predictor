@@ -24,8 +24,8 @@ func GetComments(blogId int) ([]Comment, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -47,8 +47,8 @@ func GetBlog(blogId int) (BlogEntry, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return BlogEntry{}, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return BlogEntry{}, errors.New(data.Commentv)
 		} else {
 			return BlogEntry{}, errors.New("Unknown Error")
 		}
@@ -70,8 +70,8 @@ func GetHacks(contestId int) ([]Hack, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -100,8 +100,8 @@ func GetContests(gymIncluded interface{}) ([]Contest, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -123,8 +123,8 @@ func GetRatingChanges(contestId int) ([]RatingChange, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -146,9 +146,12 @@ func GetContestStandings(contestId int, handles []string, start interface{}, end
 		if reflect.TypeOf(end).Kind() != reflect.Int {
 			return ContestStandings{}, errors.New("end argument must be either nil or int")
 		}
-		addr += "&count" + strconv.Itoa(end.(int)-start.(int)+1)
+		addr += "&count=" + strconv.Itoa(end.(int)-start.(int)+1)
 	}
 	if handles != nil {
+		if len(handles) > 10000 {
+			return ContestStandings{}, errors.New("Expected at most 10000 handles")
+		}
 		addr += "&handles="
 		for i, handle := range handles {
 			addr += handle
@@ -183,8 +186,8 @@ func GetContestStandings(contestId int, handles []string, start interface{}, end
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return ContestStandings{}, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return ContestStandings{}, errors.New(data.Commentv)
 		} else {
 			return ContestStandings{}, errors.New("Unknown Error")
 		}
@@ -212,7 +215,7 @@ func GetContestStatus(contestId int, handle interface{}, start interface{}, end 
 		if reflect.TypeOf(end).Kind() != reflect.Int {
 			return nil, errors.New("end must have type int")
 		}
-		addr += "&count" + strconv.Itoa(end.(int)-start.(int)+1)
+		addr += "&count=" + strconv.Itoa(end.(int)-start.(int)+1)
 	}
 	resp, err := http.Get(addr)
 	if err != nil {
@@ -228,8 +231,8 @@ func GetContestStatus(contestId int, handle interface{}, start interface{}, end 
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -267,8 +270,8 @@ func GetPsetProblems(tags []string, psetName interface{}) (ProblemStatistics, er
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return ProblemStatistics{}, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return ProblemStatistics{}, errors.New(data.Commentv)
 		} else {
 			return ProblemStatistics{}, errors.New("Unknown Error")
 		}
@@ -297,8 +300,8 @@ func GetPsetRecentStatus(count_ int, psetName interface{}) ([]Submission, error)
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -321,8 +324,8 @@ func GetPsetRecentActions(maxCount int) ([]RecentAction, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -345,8 +348,8 @@ func GetBlogEntries(handle string) ([]BlogEntry, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -381,8 +384,8 @@ func GetUserInfo(handles []string) ([]User, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -411,8 +414,8 @@ func GetRatedList(activeOnly interface{}) ([]User, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -435,8 +438,8 @@ func GetUserRatings(handle string) ([]RatingChange, error) {
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
@@ -474,8 +477,8 @@ func getUserStatus(handle string, start interface{}, end interface{}) ([]Submiss
 	if data.Status == "OK" {
 		return data.Result, nil
 	} else {
-		if data.Comment_ != "" {
-			return nil, errors.New(data.Comment_)
+		if data.Commentv != "" {
+			return nil, errors.New(data.Commentv)
 		} else {
 			return nil, errors.New("Unknown Error")
 		}
