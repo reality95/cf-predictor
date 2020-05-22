@@ -9,8 +9,9 @@ import (
 	"strconv"
 )
 
-func GetComments(blogId int) ([]Comment, error) {
-	resp, err := http.Get("https://codeforces.com/api/blogEntry.comments?blogEntryId=" + strconv.Itoa(blogId))
+//GetComments ... getting the list of comments from blog with blog ID `blogID`
+func GetComments(blogID int) ([]Comment, error) {
+	resp, err := http.Get("https://codeforces.com/api/blogEntry.comments?blogEntryId=" + strconv.Itoa(blogID))
 	if err != nil {
 		return nil, err
 	}
@@ -23,17 +24,16 @@ func GetComments(blogId int) ([]Comment, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
-func GetBlog(blogId int) (BlogEntry, error) {
-	resp, err := http.Get("https://codeforces.com/api/blogEntry.view?blogEntryId=" + strconv.Itoa(blogId))
+//GetBlog ... getting the BlogEntry from the blog with blog ID `blogID`
+func GetBlog(blogID int) (BlogEntry, error) {
+	resp, err := http.Get("https://codeforces.com/api/blogEntry.view?blogEntryId=" + strconv.Itoa(blogID))
 	if err != nil {
 		return BlogEntry{}, err
 	}
@@ -46,17 +46,16 @@ func GetBlog(blogId int) (BlogEntry, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return BlogEntry{}, errors.New(data.Commentv)
-		} else {
-			return BlogEntry{}, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return BlogEntry{}, errors.New(data.Commentv)
+	}
+	return BlogEntry{}, errors.New("Unknown Error")
 }
 
-func GetHacks(contestId int) ([]Hack, error) {
-	resp, err := http.Get("https://codeforces.com/api/contest.hacks?contestId=" + strconv.Itoa(contestId))
+//GetHacks ... getting the list of hacks from the contest with contest ID `contestID`
+func GetHacks(contestID int) ([]Hack, error) {
+	resp, err := http.Get("https://codeforces.com/api/contest.hacks?contestId=" + strconv.Itoa(contestID))
 	if err != nil {
 		return nil, err
 	}
@@ -69,15 +68,18 @@ func GetHacks(contestId int) ([]Hack, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
+//GetContests ... getting the list of contests
+/*
+	Optional arguments:
+		(*) gymIncluded - if it is not nil then will include the contests from the gym if `gymIncluded` is true, otherwise false
+*/
 func GetContests(gymIncluded interface{}) ([]Contest, error) {
 	addr := "https://codeforces.com/api/contest.list"
 	if gymIncluded != nil {
@@ -99,17 +101,16 @@ func GetContests(gymIncluded interface{}) ([]Contest, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
-func GetRatingChanges(contestId int) ([]RatingChange, error) {
-	resp, err := http.Get("https://codeforces.com/api/contest.ratingChanges?contestId=" + strconv.Itoa(contestId))
+//GetRatingChanges ... getting the list of all rating changes in the contest with contest ID `contestID`
+func GetRatingChanges(contestID int) ([]RatingChange, error) {
+	resp, err := http.Get("https://codeforces.com/api/contest.ratingChanges?contestId=" + strconv.Itoa(contestID))
 	if err != nil {
 		return nil, err
 	}
@@ -122,17 +123,24 @@ func GetRatingChanges(contestId int) ([]RatingChange, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
-func GetContestStandings(contestId int, handles []string, start interface{}, end interface{}, room interface{}, showUnofficial interface{}) (ContestStandings, error) {
-	addr := "https://codeforces.com/api/contest.standings?contestId=" + strconv.Itoa(contestId)
+//GetContestStandings ... getting the contest standings from the contest with contest ID `contestID`
+/*	Optional arguments in the following order:
+	(*) handles - if it is not nil, the contest standings will be restricted only to these handles, at most 10000 handles
+	(*) start - if it is not nil, the contest standings will include only participants starting at position `start`
+	(*) end - if it is not nil, start must not be nil as well, the contest standings will include only participants between positions `start` and `end`
+	(*) room - if it is not nil, the contest standings will include only participants from room `room`
+	(*) showUnofficial - if it is not nil, the answer will include unofficial standings if `showUnofficial` is false and not included if it's true,
+						by default it is false
+*/
+func GetContestStandings(contestID int, handles []string, start interface{}, end interface{}, room interface{}, showUnofficial interface{}) (ContestStandings, error) {
+	addr := "https://codeforces.com/api/contest.standings?contestId=" + strconv.Itoa(contestID)
 	if start != nil {
 		if reflect.TypeOf(start).Kind() != reflect.Int {
 			return ContestStandings{}, errors.New("start argument must be either nil or int")
@@ -185,17 +193,21 @@ func GetContestStandings(contestId int, handles []string, start interface{}, end
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return ContestStandings{}, errors.New(data.Commentv)
-		} else {
-			return ContestStandings{}, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return ContestStandings{}, errors.New(data.Commentv)
+	}
+	return ContestStandings{}, errors.New("Unknown Error")
 }
 
-func GetContestStatus(contestId int, handle interface{}, start interface{}, end interface{}) ([]Submission, error) {
-	addr := " https://codeforces.com/api/contest.status?contestId=" + strconv.Itoa(contestId)
+//GetContestStatus ... getting the contest status from the contest with contest ID `contestID`
+/*		Optional arguments in the following order:
+		(*) handles - if it is not nil, the contest standings will be restricted only to submissions submitted by participant with handle `handle`
+		(*) start - if it is not nil, the contest standings will include only participants starting at position `start`
+		(*) end - if it is not nil, `start` must not be nil as well, the contest standings will include only participants between positions `start` and `end`
+*/
+func GetContestStatus(contestID int, handle interface{}, start interface{}, end interface{}) ([]Submission, error) {
+	addr := "https://codeforces.com/api/contest.status?contestId=" + strconv.Itoa(contestID)
 	if handle != nil {
 		if reflect.TypeOf(handle).Kind() != reflect.String {
 			return nil, errors.New("handle must have type string")
@@ -230,15 +242,19 @@ func GetContestStatus(contestId int, handle interface{}, start interface{}, end 
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
+//GetPsetProblems ... getting the problem statistics from the problemset
+/*
+	Optional arguments:
+		(*) tags - if it is not nil, will return only the problem statistics for problems whose tags include subset `tags`
+		(*) psetName - if it is not nil, will return the problem statistics for problems from problemset with name `psetName`
+*/
 func GetPsetProblems(tags []string, psetName interface{}) (ProblemStatistics, error) {
 	addr := "https://codeforces.com/api/problemset.problems"
 	if tags != nil {
@@ -269,17 +285,23 @@ func GetPsetProblems(tags []string, psetName interface{}) (ProblemStatistics, er
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return ProblemStatistics{}, errors.New(data.Commentv)
-		} else {
-			return ProblemStatistics{}, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return ProblemStatistics{}, errors.New(data.Commentv)
+	}
+	return ProblemStatistics{}, errors.New("Unknown Error")
 }
 
-func GetPsetRecentStatus(count_ int, psetName interface{}) ([]Submission, error) {
-	addr := "https://codeforces.com/api/problemset.recentStatus?count=" + strconv.Itoa(count_)
+//GetPsetRecentStatus ... get `countv` recent submissions (1 <= `countv` <= 1000)
+/*
+	Optional arguments:
+		(*) psetName - if it is not nil, will return the problem statistics for problems with name `psetName`
+*/
+func GetPsetRecentStatus(countv int, psetName interface{}) ([]Submission, error) {
+	if countv > 1000 {
+		return nil, errors.New("count cannot be more than 1000")
+	}
+	addr := "https://codeforces.com/api/problemset.recentStatus?count=" + strconv.Itoa(countv)
 	if psetName != nil {
 		if reflect.TypeOf(psetName).Kind() != reflect.String {
 			return nil, errors.New("problemsetName must have type string")
@@ -299,16 +321,18 @@ func GetPsetRecentStatus(count_ int, psetName interface{}) ([]Submission, error)
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
+//GetPsetRecentActions ... get at most `maxCount` recent actions (1 <= `maxCount` <= 100)
 func GetPsetRecentActions(maxCount int) ([]RecentAction, error) {
+	if maxCount > 100 {
+		return nil, errors.New("maxCount cannot be more than 100")
+	}
 	addr := "https://codeforces.com/api/recentActions?maxCount=" + strconv.Itoa(maxCount)
 	resp, err := http.Get(addr)
 	if err != nil {
@@ -323,15 +347,14 @@ func GetPsetRecentActions(maxCount int) ([]RecentAction, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
+//GetBlogEntries ... get the list of blog entries from user with handle `handle`
 func GetBlogEntries(handle string) ([]BlogEntry, error) {
 	addr := "https://codeforces.com/api/user.blogEntries?handle=" + handle
 	resp, err := http.Get(addr)
@@ -347,15 +370,14 @@ func GetBlogEntries(handle string) ([]BlogEntry, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
+//GetUserInfo ... get the user info for all users in `handles`, at most 10000 handles
 func GetUserInfo(handles []string) ([]User, error) {
 	if handles == nil {
 		return nil, errors.New("There must be at least one handle")
@@ -383,15 +405,18 @@ func GetUserInfo(handles []string) ([]User, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
+//GetRatedList ... get the list of all users in the increasing order of ranks
+/*
+	Optional arguments:
+		(*) activeOnly - if it is not nil, will include only active users in the last 6 months if `activeOnly` is true
+*/
 func GetRatedList(activeOnly interface{}) ([]User, error) {
 	addr := "https://codeforces.com/api/user.ratedList"
 	if activeOnly != nil {
@@ -413,15 +438,14 @@ func GetRatedList(activeOnly interface{}) ([]User, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
+//GetUserRatings ... get the list of all rating changes for user with handle `handle`
 func GetUserRatings(handle string) ([]RatingChange, error) {
 	addr := "https://codeforces.com/api/user.rating?handle=" + handle
 	resp, err := http.Get(addr)
@@ -437,16 +461,20 @@ func GetUserRatings(handle string) ([]RatingChange, error) {
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
 
-func getUserStatus(handle string, start interface{}, end interface{}) ([]Submission, error) {
+//GetUserStatus ... get the list of submissions from user with handle `handle`
+/*
+	Optional arguments:
+		(*) start - if it is not nil, will include only the submissions starting with index `start`
+		(*) end - if it is not nil, `start` must not be nil as well, will include only the submissions with indices between `start` and `end`
+*/
+func GetUserStatus(handle string, start interface{}, end interface{}) ([]Submission, error) {
 	addr := "https://codeforces.com/api/user.status?handle=" + handle
 	if start != nil {
 		if reflect.TypeOf(start).Kind() != reflect.Int {
@@ -476,11 +504,9 @@ func getUserStatus(handle string, start interface{}, end interface{}) ([]Submiss
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
 		return data.Result, nil
-	} else {
-		if data.Commentv != "" {
-			return nil, errors.New(data.Commentv)
-		} else {
-			return nil, errors.New("Unknown Error")
-		}
 	}
+	if data.Commentv != "" {
+		return nil, errors.New(data.Commentv)
+	}
+	return nil, errors.New("Unknown Error")
 }
