@@ -114,6 +114,11 @@ type ProblemStatistics struct {
 	SolvedCount int    `json:"solvedCount"`
 }
 
+type PsetProblems struct {
+	Problems []Problem           `json:"problems"`
+	PStats   []ProblemStatistics `json:"problemStatistics"`
+}
+
 type Submission struct {
 	Id                  int     `json:"id"`
 	ContestId           int     `json:"contestId"`
@@ -219,9 +224,9 @@ type RequestContestStatus struct {
 }
 
 type RequestPsetProblems struct {
-	Status   string            `json:"status"`
-	Commentv string            `json:"comment"`
-	Result   ProblemStatistics `json:"result"`
+	Status   string       `json:"status"`
+	Commentv string       `json:"comment"`
+	Result   PsetProblems `json:"result"`
 }
 
 type RequestRecentStatus struct {

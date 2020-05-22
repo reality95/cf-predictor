@@ -255,10 +255,10 @@ func GetContestStatus(contestID int, handle interface{}, start interface{}, end 
 		(*) tags - if it is not nil, will return only the problem statistics for problems whose tags include subset `tags`
 		(*) psetName - if it is not nil, will return the problem statistics for problems from problemset with name `psetName`
 */
-func GetPsetProblems(tags []string, psetName interface{}) (ProblemStatistics, error) {
+func GetPsetProblems(tags []string, psetName interface{}) ([]ProblemStatistics, []Problem, error) {
 	addr := "https://codeforces.com/api/problemset.problems"
 	if tags != nil {
-		addr += "&tags="
+		addr += "?tags="
 		for i, tag := range tags {
 			addr += tag
 			if i+1 < len(tags) {
@@ -268,28 +268,33 @@ func GetPsetProblems(tags []string, psetName interface{}) (ProblemStatistics, er
 	}
 	if psetName != nil {
 		if reflect.TypeOf(psetName).Kind() != reflect.String {
-			return ProblemStatistics{}, errors.New("problemsetName must have type string")
+			return nil, nil, errors.New("problemsetName must have type string")
 		}
-		addr += "&problemsetName=" + psetName.(string)
+		if tags != nil {
+			addr += "&"
+		} else {
+			addr += "?"
+		}
+		addr += "problemsetName=" + psetName.(string)
 	}
 	resp, err := http.Get(addr)
 	if err != nil {
-		return ProblemStatistics{}, err
+		return nil, nil, err
 	}
 	var plainText []byte
 	plainText, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return ProblemStatistics{}, err
+		return nil, nil, err
 	}
 	var data RequestPsetProblems
 	json.Unmarshal(plainText, &data)
 	if data.Status == "OK" {
-		return data.Result, nil
+		return data.Result.PStats, data.Result.Problems, nil
 	}
 	if data.Commentv != "" {
-		return ProblemStatistics{}, errors.New(data.Commentv)
+		return nil, nil, errors.New(data.Commentv)
 	}
-	return ProblemStatistics{}, errors.New("Unknown Error")
+	return nil, nil, errors.New("Unknown Error")
 }
 
 //GetPsetRecentStatus ... get `countv` recent submissions (1 <= `countv` <= 1000)

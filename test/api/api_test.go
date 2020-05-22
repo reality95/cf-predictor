@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/reality95/cf-predictor/src/api"
 	"github.com/stretchr/testify/assert"
+	_ "log"
 	"testing"
 	"time"
 )
@@ -29,7 +30,7 @@ func TestGetComments(t *testing.T) {
 		assert.True(c.Text != "", "The comment number %d must not be empty\n", i)
 	}
 
-	comments, err = api.GetComments(666666)
+	_, err = api.GetComments(666666)
 	assert.True(err != nil, "Expected an error while extracting comments for blogId 666666, received none\n")
 	assert.True(err.Error() == "blogEntryId: Blog entry with id 666666 not found", "Expected a different error while extracting comments for blogId 666666\n")
 }
@@ -50,7 +51,7 @@ func TestGetBlog(t *testing.T) {
 	assert.Equal(blog.Locale, "en")
 	assert.Equal(blog.Tags, []string{"2010", "acm", "acm-icpc", "back home", "saratov"})
 
-	blog, err = api.GetBlog(666666)
+	_, err = api.GetBlog(666666)
 
 	assert.True(err != nil, "Expected an error while extracting BlogEntru for blogId 666666, received none\n")
 	assert.True(err.Error() == ("blogEntryId: Blog entry with id 666666 not found"), "Expected a different error while extracting comments for blogId 666666\n")
@@ -67,7 +68,7 @@ func TestGetHacks(t *testing.T) {
 	assert.Equal(hacks[0].CreationTimeSeconds, 1438274514)
 	assert.Equal(hacks[0].Hacker, api.Party{
 		ContestId:        566,
-		Members:          []api.Member{api.Member{Handle: "Sehnsucht"}},
+		Members:          []api.Member{{Handle: "Sehnsucht"}},
 		ParticipantType:  "CONTESTANT",
 		Ghost:            false,
 		Room:             29,
@@ -76,7 +77,7 @@ func TestGetHacks(t *testing.T) {
 	assert.Equal(hacks[0].Verdict, "INVALID_INPUT")
 	assert.Equal(hacks[0].Defender, api.Party{
 		ContestId:        566,
-		Members:          []api.Member{api.Member{Handle: "osama"}},
+		Members:          []api.Member{{Handle: "osama"}},
 		ParticipantType:  "CONTESTANT",
 		Ghost:            false,
 		Room:             29,
@@ -111,7 +112,7 @@ func TestGetRatingChanges(t *testing.T) {
 		NewRating:               2941,
 	})
 
-	changes, err = api.GetRatingChanges(6669)
+	_, err = api.GetRatingChanges(6669)
 	assert.True(err != nil, "Expected error while extracting hacks from contestId 6669, got none")
 	assert.True(err.Error() == "contestId: Contest with id 6669 not found", "Expected a different error while extracting RatingChanges from contestId 6669\n")
 }
@@ -122,7 +123,7 @@ func TestGetContestStandings(t *testing.T) {
 	assert.True(err == nil, "Expected no error while extracting ContestStandings from contestId 566")
 	assert.Equal(len(CStandings.Rows), 5)
 	assert.Equal(CStandings.Problems, []api.Problem{
-		api.Problem{
+		{
 			ContestId: 566,
 			Index:     "A",
 			Name:      "Matching Names",
@@ -131,7 +132,7 @@ func TestGetContestStandings(t *testing.T) {
 			Rating:    2300,
 			Tags:      []string{"dfs and similar", "strings", "trees"},
 		},
-		api.Problem{
+		{
 			ContestId: 566,
 			Index:     "B",
 			Name:      "Replicating Processes",
@@ -140,7 +141,7 @@ func TestGetContestStandings(t *testing.T) {
 			Rating:    2600,
 			Tags:      []string{"constructive algorithms", "greedy"},
 		},
-		api.Problem{
+		{
 			ContestId: 566,
 			Index:     "C",
 			Name:      "Logistical Questions",
@@ -149,7 +150,7 @@ func TestGetContestStandings(t *testing.T) {
 			Rating:    3000,
 			Tags:      []string{"dfs and similar", "divide and conquer", "trees"},
 		},
-		api.Problem{
+		{
 			ContestId: 566,
 			Index:     "D",
 			Name:      "Restructuring Company",
@@ -158,7 +159,7 @@ func TestGetContestStandings(t *testing.T) {
 			Rating:    1900,
 			Tags:      []string{"data structures", "dsu"},
 		},
-		api.Problem{
+		{
 			ContestId: 566,
 			Index:     "E",
 			Name:      "Restoring Map",
@@ -167,7 +168,7 @@ func TestGetContestStandings(t *testing.T) {
 			Rating:    3200,
 			Tags:      []string{"bitmasks", "constructive algorithms", "trees"},
 		},
-		api.Problem{
+		{
 			ContestId: 566,
 			Index:     "F",
 			Name:      "Clique in the Divisibility Graph",
@@ -176,7 +177,7 @@ func TestGetContestStandings(t *testing.T) {
 			Rating:    1500,
 			Tags:      []string{"dp", "math", "number theory"},
 		},
-		api.Problem{
+		{
 			ContestId: 566,
 			Index:     "G",
 			Name:      "Max and Min",
@@ -199,7 +200,7 @@ func TestGetContestStandings(t *testing.T) {
 		Partyv: api.Party{
 			ContestId: 566,
 			Members: []api.Member{
-				api.Member{
+				{
 					Handle: "rng_58",
 				},
 			},
@@ -214,42 +215,42 @@ func TestGetContestStandings(t *testing.T) {
 		SuccessfulHackCount:   1,
 		UnsuccessfulHackCount: 0,
 		ProblemResults: []api.ProblemResult{
-			api.ProblemResult{
+			{
 				Points:               1330.0,
 				RejectedAttemptCount: 0,
 				Typev:                "FINAL",
 				BestSubmissionTimeSeconds: 3624,
 			},
-			api.ProblemResult{
+			{
 				Points:               1600.0,
 				RejectedAttemptCount: 0,
 				Typev:                "FINAL",
 				BestSubmissionTimeSeconds: 5422,
 			},
-			api.ProblemResult{
+			{
 				Points:               1404.0,
 				RejectedAttemptCount: 0,
 				Typev:                "FINAL",
 				BestSubmissionTimeSeconds: 7991,
 			},
-			api.ProblemResult{
+			{
 				Points:               840.0,
 				RejectedAttemptCount: 0,
 				Typev:                "FINAL",
 				BestSubmissionTimeSeconds: 2447,
 			},
-			api.ProblemResult{
+			{
 				Points:               0.0,
 				RejectedAttemptCount: 0,
 				Typev:                "FINAL",
 			},
-			api.ProblemResult{
+			{
 				Points:               490.0,
 				RejectedAttemptCount: 0,
 				Typev:                "FINAL",
 				BestSubmissionTimeSeconds: 339,
 			},
-			api.ProblemResult{
+			{
 				Points:               2210.0,
 				RejectedAttemptCount: 0,
 				Typev:                "FINAL",
@@ -276,9 +277,9 @@ func TestGetContestStandings(t *testing.T) {
 	assert.True(err == nil, "Expected no error while getting contest standings starting at position 69")
 	assert.Equal(len(CStandings.Rows), 557)
 
-	CStandings, err = api.GetContestStandings(566, nil, 69, nil, nil, true)
-	assert.True(err == nil, "Expected no error while getting contest standings starting at position 69 showing unofficial standings")
-	assert.Equal(len(CStandings.Rows), 3891)
+	CStandings, err = api.GetContestStandings(566, nil, 69, 666, nil, true)
+	assert.True(err == nil, "Expected no error while getting contest standings between positions 69 and 666 showing unofficial standings")
+	assert.Equal(len(CStandings.Rows), 666-69+1)
 
 	CStandings, err = api.GetContestStandings(566, nil, nil, nil, 20, nil)
 	assert.True(err == nil, "Expected no error while getting contest standings from room 5")
@@ -306,3 +307,86 @@ func TestGetContestStandings(t *testing.T) {
 	CStandings, err = api.GetContestStandings(566, nil, nil, nil, nil, 0)
 	assert.True(err != nil, "Expected error if showUnofficial is not bool")
 }
+
+func TestGetContestStatus(t *testing.T) {
+	assert := assert.New(t)
+	submissions, err := api.GetContestStatus(566, nil, 3, 13)
+	assert.True(err == nil, "Expected no error while extracting submissions from contest 566, start = 3,end = 13")
+	assert.Truef(len(submissions) == 11, "Expected 10 submissions while extracting submissions from contest 566, start = 3,end = 13, got %d", len(submissions))
+
+	submissions, err = api.GetContestStatus(1179, "I_Love_Tina", 1, 1)
+	assert.True(err == nil, "Expected no error while extracting submissions from contest 1179 with handle I_Love_Tina the most recent submission")
+	assert.Truef(len(submissions) == 1, "Expected one submission while extracting the most recent submission from contest 1179 with handle I_Love_Tina, got %d", len(submissions))
+	assert.Equal(submissions[0], api.Submission{
+		Id:                  56038919,
+		ContestId:           1179,
+		CreationTimeSeconds: 1561469037,
+		RelativeTimeSeconds: submissions[0].RelativeTimeSeconds,
+		Problemv: api.Problem{
+			ContestId: 1179,
+			Index:     "E",
+			Name:      "Alesya and Discrete Math",
+			Typev:     "PROGRAMMING",
+			Points:    2250.0,
+			Rating:    3200,
+			Tags:      []string{"divide and conquer", "interactive"},
+		},
+		Author: api.Party{
+			ContestId: 1179,
+			Members: []api.Member{
+				{
+					Handle: "I_Love_Tina",
+				},
+			},
+			ParticipantType:  "PRACTICE",
+			Ghost:            false,
+			StartTimeSeconds: 1561136700,
+		},
+		ProgrammingLanguage: "GNU C++17",
+		Verdict:             "RUNTIME_ERROR",
+		Testset:             "TESTS",
+		PassedTestCount:     2,
+		TimeConsumedMillis:  15,
+		MemoryConsumedBytes: 1638400,
+	})
+
+	_, err = api.GetContestStatus(6669, nil, nil, nil)
+	assert.True(err != nil, "Expected erorr while trying to extract submissions from contest with ID 6669")
+	assert.True(err.Error() == "contestId: Contest with id 6669 not found", "Expected a different erorr while trying to extract submissions from contest with ID 6669")
+}
+
+func TestGetPsetProblems(t *testing.T) {
+	assert := assert.New(t)
+	pStats, problems, err := api.GetPsetProblems([]string{"brute%20force", "math", "implementation", "binary%20search"}, nil)
+	assert.True(err == nil, "Expected no error while getting the problems with tags 'brute force','math','implementation','binary search', got none")
+	assert.Equal(len(pStats), len(problems))
+	assert.True(len(problems) > 0, "Expected at least one problem while getting the problems with tags 'brute force','math','implementation','binary search'")
+
+	nProblems := len(problems)
+
+	time.Sleep(time.Second)
+
+	pStats, problems, err = api.GetPsetProblems([]string{"brute%20force", "math", "math", "implementation", "binary%20search", "math"}, nil)
+
+	assert.True(err == nil, "Expected no error while getting the problems with tags 'brute force','math','implementation','binary search' with duplicates, got none")
+	assert.Truef(nProblems == len(problems), "Expected the same result if we add duplicate tags, expected %d, got %d", nProblems, len(problems))
+
+	pStats, problems, err = api.GetPsetProblems([]string{"brute%20force", "math", "math", "implementation", "binary%20search", "math"}, "acmsguru")
+	assert.True(err == nil, "Expected no error while getting the problems with tags 'brute force','math','implementation','binary search' with duplicates and psetName 'acmsguru', got none")
+
+	pStats, problems, err = api.GetPsetProblems([]string{"hard%20problem"}, nil)
+	assert.True(err == nil, "Expected no error while getting the problems with tag 'hard problem'")
+	assert.True(len(problems) == 0 && len(pStats) == 0, "Expected no problem while getting the problems with tag 'hard problem'")
+
+	_, _, err = api.GetPsetProblems(nil, 3.14)
+	assert.True(err != nil, "Expected error if psetName type is not string")
+	assert.True(err.Error() == "problemsetName must have type string", "Expected a different error if psetName type is not string")
+
+}
+
+/*
+func TestGetPsetRecentStatus(t *testing.T) {
+	assert := assert.New(t)
+
+}
+*/
