@@ -489,12 +489,12 @@ func GetUserStatus(handle string, start interface{}, end interface{}) ([]Submiss
 	}
 	if end != nil {
 		if start == nil {
-			return nil, errors.New("If count is not nil then from should not be nil as well")
+			return nil, errors.New("If end is not nil then from should not be nil as well")
 		}
 		if reflect.TypeOf(end).Kind() != reflect.Int {
 			return nil, errors.New("end must have type int")
 		}
-		addr += "&count" + strconv.Itoa(end.(int)-start.(int)+1)
+		addr += "&count=" + strconv.Itoa(end.(int)-start.(int)+1)
 	}
 	resp, err := http.Get(addr)
 	if err != nil {

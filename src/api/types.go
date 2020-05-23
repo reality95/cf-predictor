@@ -1,17 +1,17 @@
 package api
 
 type Comment struct {
-	Id                  int    `json:"id"`
+	ID                  int    `json:"id"`
 	CreationTimeSeconds int    `json:"creationTimeSeconds"`
 	CommentatorHandle   string `json:"commentatorHandle"`
 	Locale              string `json:"locale"`
 	Text                string `json:"text"`
-	ParentCommentId     int    `json:"parentCommentId"`
+	ParentCommentID     int    `json:"parentCommentId"`
 	Rating              int    `json:"rating"`
 }
 
 type BlogEntry struct {
-	Id                      int      `json:"id"`
+	ID                      int      `json:"id"`
 	OriginalLocale          string   `json:"originalLocale"`
 	CreationTimeSeconds     int      `json:"creationTimeSeconds"`
 	AuthorHandle            string   `json:"authorHandle"`
@@ -27,8 +27,8 @@ type BlogEntry struct {
 type User struct {
 	Handle                  string `json:"handle"`
 	Email                   string `json:"email"`
-	VkId                    string `json:"vkId"`
-	OpenId                  string `json:"openId"`
+	VkID                    string `json:"vkId"`
+	OpenID                  string `json:"openId"`
 	FirstName               string `json:"firstName"`
 	LastName                string `json:"lastName"`
 	Country                 string `json:"country"`
@@ -53,7 +53,7 @@ type RecentAction struct {
 }
 
 type RatingChange struct {
-	ContestId               int    `json:"contestId"`
+	ContestID               int    `json:"contestId"`
 	ContestName             string `json:"contestName"`
 	Handle                  string `json:"handle"`
 	Rank                    int    `json:"rank"`
@@ -63,7 +63,7 @@ type RatingChange struct {
 }
 
 type Contest struct {
-	Id                  int    `json:"id"`
+	ID                  int    `json:"id"`
 	Name                string `json:"name"`
 	Typev               string `json:"type"`
 	Phase               string `json:"phase"`
@@ -87,10 +87,10 @@ type Member struct {
 }
 
 type Party struct {
-	ContestId        int      `json:"contestId"`
+	ContestID        int      `json:"contestId"`
 	Members          []Member `json:"members"`
 	ParticipantType  string   `json:"participantType"`
-	TeamId           int      `json:"teamId"`
+	TeamID           int      `json:"teamId"`
 	TeamName         string   `json:"teamName"`
 	Ghost            bool     `json:"ghost"`
 	Room             int      `json:"room"`
@@ -98,7 +98,7 @@ type Party struct {
 }
 
 type Problem struct {
-	ContestId int      `json:"contestId"`
+	ContestID int      `json:"contestId"`
 	PsetName  string   `json:"problemsetName"`
 	Index     string   `json:"index"`
 	Name      string   `json:"name"`
@@ -109,7 +109,7 @@ type Problem struct {
 }
 
 type ProblemStatistics struct {
-	ContestId   int    `json:"contestId"`
+	ContestID   int    `json:"contestId"`
 	Index       string `json:"index"`
 	SolvedCount int    `json:"solvedCount"`
 }
@@ -120,8 +120,8 @@ type PsetProblems struct {
 }
 
 type Submission struct {
-	Id                  int     `json:"id"`
-	ContestId           int     `json:"contestId"`
+	ID                  int     `json:"id"`
+	ContestID           int     `json:"contestId"`
 	CreationTimeSeconds int     `json:"creationTimeSeconds"`
 	RelativeTimeSeconds int     `json:"relativeTimeSeconds"`
 	Problemv            Problem `json:"problem"`
@@ -141,7 +141,7 @@ type JProtocol struct {
 }
 
 type Hack struct {
-	Id                  int       `json:"id"`
+	ID                  int       `json:"id"`
 	CreationTimeSeconds int       `json:"creationTimeSeconds"`
 	Hacker              Party     `json:"hacker"`
 	Defender            Party     `json:"defender"`
