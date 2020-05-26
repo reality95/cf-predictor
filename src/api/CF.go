@@ -84,7 +84,7 @@ func GetContests(gymIncluded interface{}) ([]Contest, error) {
 	addr := "https://codeforces.com/api/contest.list"
 	if gymIncluded != nil {
 		if reflect.TypeOf(gymIncluded).Kind() == reflect.Bool {
-			return nil, errors.New("gymIncluded must have type bool")
+			return nil, errors.New("`gymIncluded` must have type bool")
 		}
 		addr += "?gym=" + strconv.FormatBool(gymIncluded.(bool))
 	}
@@ -143,16 +143,16 @@ func GetContestStandings(contestID int, handles []string, start interface{}, end
 	addr := "https://codeforces.com/api/contest.standings?contestId=" + strconv.Itoa(contestID)
 	if start != nil {
 		if reflect.TypeOf(start).Kind() != reflect.Int {
-			return ContestStandings{}, errors.New("start argument must be either nil or int")
+			return ContestStandings{}, errors.New("`start` argument must be either nil or int")
 		}
 		addr += "&from=" + strconv.Itoa(start.(int))
 	}
 	if end != nil {
 		if start == nil {
-			return ContestStandings{}, errors.New("If end is not nil, start must not be nil as well")
+			return ContestStandings{}, errors.New("If `end` is not nil, `start` must not be nil as well")
 		}
 		if reflect.TypeOf(end).Kind() != reflect.Int {
-			return ContestStandings{}, errors.New("end argument must be either nil or int")
+			return ContestStandings{}, errors.New("`end` argument must be either nil or int")
 		}
 		addr += "&count=" + strconv.Itoa(end.(int)-start.(int)+1)
 	}
@@ -170,13 +170,13 @@ func GetContestStandings(contestID int, handles []string, start interface{}, end
 	}
 	if room != nil {
 		if reflect.TypeOf(room).Kind() != reflect.Int {
-			return ContestStandings{}, errors.New("room argument must be either nil or int")
+			return ContestStandings{}, errors.New("`room` argument must be either nil or int")
 		}
 		addr += "&room=" + strconv.Itoa(room.(int))
 	}
 	if showUnofficial != nil {
 		if reflect.TypeOf(showUnofficial).Kind() != reflect.Bool {
-			return ContestStandings{}, errors.New("showUnofficial argument must be either nil or bool")
+			return ContestStandings{}, errors.New("`showUnofficial` argument must be either nil or bool")
 		}
 		addr += "&showUnofficial=" + strconv.FormatBool(showUnofficial.(bool))
 	}
@@ -210,22 +210,22 @@ func GetContestStatus(contestID int, handle interface{}, start interface{}, end 
 	addr := "https://codeforces.com/api/contest.status?contestId=" + strconv.Itoa(contestID)
 	if handle != nil {
 		if reflect.TypeOf(handle).Kind() != reflect.String {
-			return nil, errors.New("handle must have type string")
+			return nil, errors.New("`handle` must have type string")
 		}
 		addr += "&handle=" + handle.(string)
 	}
 	if start != nil {
 		if reflect.TypeOf(start).Kind() != reflect.Int {
-			return nil, errors.New("start must have type int")
+			return nil, errors.New("`start` must have type int")
 		}
 		addr += "&from=" + strconv.Itoa(start.(int))
 	}
 	if end != nil {
 		if start == nil {
-			return nil, errors.New("If end is not nil, start must not be nil as well")
+			return nil, errors.New("If `end` is not nil, `start` must not be nil as well")
 		}
 		if reflect.TypeOf(end).Kind() != reflect.Int {
-			return nil, errors.New("end must have type int")
+			return nil, errors.New("`end` must have type int")
 		}
 		addr += "&count=" + strconv.Itoa(end.(int)-start.(int)+1)
 	}
@@ -268,7 +268,7 @@ func GetPsetProblems(tags []string, psetName interface{}) ([]ProblemStatistics, 
 	}
 	if psetName != nil {
 		if reflect.TypeOf(psetName).Kind() != reflect.String {
-			return nil, nil, errors.New("problemsetName must have type string")
+			return nil, nil, errors.New("`psetName` must have type string")
 		}
 		if tags != nil {
 			addr += "&"
@@ -304,12 +304,12 @@ func GetPsetProblems(tags []string, psetName interface{}) ([]ProblemStatistics, 
 */
 func GetPsetRecentStatus(countv int, psetName interface{}) ([]Submission, error) {
 	if countv > 1000 {
-		return nil, errors.New("count cannot be more than 1000")
+		return nil, errors.New("`countv` cannot be more than 1000")
 	}
 	addr := "https://codeforces.com/api/problemset.recentStatus?count=" + strconv.Itoa(countv)
 	if psetName != nil {
 		if reflect.TypeOf(psetName).Kind() != reflect.String {
-			return nil, errors.New("problemsetName must have type string")
+			return nil, errors.New("`psetName` must have type string")
 		}
 		addr += "&problemsetName=" + psetName.(string)
 	}
@@ -336,7 +336,7 @@ func GetPsetRecentStatus(countv int, psetName interface{}) ([]Submission, error)
 //GetPsetRecentActions ... get at most `maxCount` recent actions (1 <= `maxCount` <= 100)
 func GetPsetRecentActions(maxCount int) ([]RecentAction, error) {
 	if maxCount > 100 {
-		return nil, errors.New("maxCount cannot be more than 100")
+		return nil, errors.New("`maxCount` cannot be more than 100")
 	}
 	addr := "https://codeforces.com/api/recentActions?maxCount=" + strconv.Itoa(maxCount)
 	resp, err := http.Get(addr)
@@ -426,7 +426,7 @@ func GetRatedList(activeOnly interface{}) ([]User, error) {
 	addr := "https://codeforces.com/api/user.ratedList"
 	if activeOnly != nil {
 		if reflect.TypeOf(activeOnly).Kind() != reflect.Bool {
-			return nil, errors.New("activeOnly must have type bool")
+			return nil, errors.New("`activeOnly` must have type bool")
 		}
 		addr += "?activeOnly=" + strconv.FormatBool(activeOnly.(bool))
 	}
@@ -483,16 +483,16 @@ func GetUserStatus(handle string, start interface{}, end interface{}) ([]Submiss
 	addr := "https://codeforces.com/api/user.status?handle=" + handle
 	if start != nil {
 		if reflect.TypeOf(start).Kind() != reflect.Int {
-			return nil, errors.New("start must have type int")
+			return nil, errors.New("`start` must have type int")
 		}
 		addr += "&from=" + strconv.Itoa(start.(int))
 	}
 	if end != nil {
 		if start == nil {
-			return nil, errors.New("If end is not nil then from should not be nil as well")
+			return nil, errors.New("If `end` is not nil then from should not be nil as well")
 		}
 		if reflect.TypeOf(end).Kind() != reflect.Int {
-			return nil, errors.New("end must have type int")
+			return nil, errors.New("`end` must have type int")
 		}
 		addr += "&count=" + strconv.Itoa(end.(int)-start.(int)+1)
 	}

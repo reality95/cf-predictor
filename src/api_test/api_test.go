@@ -1,21 +1,21 @@
 package api_test
 
 import (
-	"time"
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/reality95/cf-predictor/src/api"
+	"github.com/stretchr/testify/assert"
+	"testing"
+	"time"
 )
 
 func TestGetComments(t *testing.T) {
 	assert := assert.New(t)
 
 	comments, err := api.GetComments(69)
-	assert.True(err == nil, "Expected no error while extracting comments for blogID 69")
+	assert.True(err == nil, "Expected no error while extracting comments for `blogID` 69")
 	assert.True(len(comments) == 0, "Blog with blogID 69 has no comments, received %d comments\n", len(comments))
 
 	comments, err = api.GetComments(666)
-	assert.True(err == nil, "Expected no error while extracting comments for blogID 666")
+	assert.True(err == nil, "Expected no error while extracting comments for `blogID` 666")
 	assert.Truef(len(comments) == 5, "Blog with blogID 666 has 5 comments, received %d comments\n", len(comments))
 
 	assert.Equal(comments[0].ID, 10505)
@@ -30,7 +30,7 @@ func TestGetComments(t *testing.T) {
 	}
 
 	_, err = api.GetComments(666666)
-	assert.True(err != nil, "Expected an error while extracting comments for blogID 666666, received none\n")
+	assert.True(err != nil, "Expected an error while extracting comments for `blogID` 666666, received none\n")
 	assert.Equal(err.Error(), "blogEntryId: Blog entry with id 666666 not found", "Expected a different error while extracting comments for blogID 666666\n")
 }
 
@@ -38,7 +38,7 @@ func TestGetBlog(t *testing.T) {
 	assert := assert.New(t)
 
 	blog, err := api.GetBlog(69)
-	assert.True(err == nil, "Expected no error while extracting BlogEntry for blogID 69")
+	assert.True(err == nil, "Expected no error while extracting BlogEntry for `blogID` 69")
 	assert.Equal(blog.OriginalLocale, "ru")
 	assert.Equal(blog.AllowViewHistory, false)
 	assert.Equal(blog.CreationTimeSeconds, 1265647999)
@@ -52,8 +52,8 @@ func TestGetBlog(t *testing.T) {
 
 	_, err = api.GetBlog(666666)
 
-	assert.True(err != nil, "Expected an error while extracting BlogEntru for blogID 666666, received none\n")
-	assert.Equal(err.Error(), "blogEntryId: Blog entry with id 666666 not found", "Expected a different error while extracting comments for blogID 666666\n")
+	assert.True(err != nil, "Expected an error while extracting BlogEntry for `blogI`D 666666, received none\n")
+	assert.Equal(err.Error(), "blogEntryId: Blog entry with id 666666 not found", "Expected a different error while extracting comments for `blogID` 666666\n")
 
 	time.Sleep(time.Second)
 }
@@ -61,7 +61,7 @@ func TestGetBlog(t *testing.T) {
 func TestGetHacks(t *testing.T) {
 	assert := assert.New(t)
 	hacks, err := api.GetHacks(566)
-	assert.True(err == nil, "Expected no error while extracting hacks from contestID 566")
+	assert.True(err == nil, "Expected no error while extracting hacks from `contestID` 566")
 	assert.Equal(len(hacks), 325)
 	assert.Equal(hacks[0].ID, 160426)
 	assert.Equal(hacks[0].CreationTimeSeconds, 1438274514)
@@ -108,35 +108,35 @@ func TestGetHacks(t *testing.T) {
 	assert.Equal(hacks[5].JudgeProtocol.Manual, "false")
 
 	_, err = api.GetHacks(6669)
-	assert.True(err != nil, "Expected error while extracting hacks from contestID 6669, got none")
-	assert.Equal(err.Error(), "contestId: Contest with id 6669 not found", "Expected a different error while extracting Hacks from contestID 6669\n")
+	assert.True(err != nil, "Expected error while extracting hacks from `contestID` 6669, got none")
+	assert.Equal(err.Error(), "contestId: Contest with id 6669 not found", "Expected a different error while extracting Hacks from `contestID` 6669\n")
 }
 
 func TestGetRatingChanges(t *testing.T) {
 	assert := assert.New(t)
 	changes, err := api.GetRatingChanges(566)
-	assert.True(err == nil, "Expected no error while extracting RatingChanges from contestID 566")
+	assert.True(err == nil, "Expected no error while extracting RatingChanges from `contestID` 566")
 	assert.Equal(len(changes), 761)
 	assert.Equal(changes[0], api.RatingChange{
-		ContestID:   566,
-		ContestName: "VK Cup 2015 - Finals, online mirror",
-		Handle:      "rng_58",
-		Rank:        1,
+		ContestID:               566,
+		ContestName:             "VK Cup 2015 - Finals, online mirror",
+		Handle:                  "rng_58",
+		Rank:                    1,
 		RatingUpdateTimeSeconds: 1438284000,
 		OldRating:               2849,
 		NewRating:               2941,
 	})
 
 	_, err = api.GetRatingChanges(6669)
-	assert.True(err != nil, "Expected error while extracting hacks from contestID 6669, got none")
-	assert.Equal(err.Error(), "contestId: Contest with id 6669 not found", "Expected a different error while extracting RatingChanges from contestID 6669\n")
+	assert.True(err != nil, "Expected error while extracting hacks from `contestID` 6669, got none")
+	assert.Equal(err.Error(), "contestId: Contest with id 6669 not found", "Expected a different error while extracting RatingChanges from `contestID` 6669\n")
 }
 
 func TestGetContestStandings(t *testing.T) {
 	assert := assert.New(t)
 	CStandings, err := api.GetContestStandings(566, nil, 1, 5, nil, nil)
-	assert.True(err == nil, "Expected no error while extracting ContestStandings from contestID 566")
-	assert.Equal(len(CStandings.Rows), 5, "Expected 5 rows is start = 1 and end = 5")
+	assert.True(err == nil, "Expected no error while extracting ContestStandings from `contestID` 566")
+	assert.Equal(len(CStandings.Rows), 5, "Expected 5 rows when extracting ContestStandings from `contestID` 566 with `start` = 1 and `end` = 5")
 	assert.Equal(CStandings.Problems, []api.Problem{
 		{
 			ContestID: 566,
@@ -231,27 +231,27 @@ func TestGetContestStandings(t *testing.T) {
 		UnsuccessfulHackCount: 0,
 		ProblemResults: []api.ProblemResult{
 			{
-				Points:               1330.0,
-				RejectedAttemptCount: 0,
-				Typev:                "FINAL",
+				Points:                    1330.0,
+				RejectedAttemptCount:      0,
+				Typev:                     "FINAL",
 				BestSubmissionTimeSeconds: 3624,
 			},
 			{
-				Points:               1600.0,
-				RejectedAttemptCount: 0,
-				Typev:                "FINAL",
+				Points:                    1600.0,
+				RejectedAttemptCount:      0,
+				Typev:                     "FINAL",
 				BestSubmissionTimeSeconds: 5422,
 			},
 			{
-				Points:               1404.0,
-				RejectedAttemptCount: 0,
-				Typev:                "FINAL",
+				Points:                    1404.0,
+				RejectedAttemptCount:      0,
+				Typev:                     "FINAL",
 				BestSubmissionTimeSeconds: 7991,
 			},
 			{
-				Points:               840.0,
-				RejectedAttemptCount: 0,
-				Typev:                "FINAL",
+				Points:                    840.0,
+				RejectedAttemptCount:      0,
+				Typev:                     "FINAL",
 				BestSubmissionTimeSeconds: 2447,
 			},
 			{
@@ -260,15 +260,15 @@ func TestGetContestStandings(t *testing.T) {
 				Typev:                "FINAL",
 			},
 			{
-				Points:               490.0,
-				RejectedAttemptCount: 0,
-				Typev:                "FINAL",
+				Points:                    490.0,
+				RejectedAttemptCount:      0,
+				Typev:                     "FINAL",
 				BestSubmissionTimeSeconds: 339,
 			},
 			{
-				Points:               2210.0,
-				RejectedAttemptCount: 0,
-				Typev:                "FINAL",
+				Points:                    2210.0,
+				RejectedAttemptCount:      0,
+				Typev:                     "FINAL",
 				BestSubmissionTimeSeconds: 1757,
 			},
 		},
@@ -277,8 +277,8 @@ func TestGetContestStandings(t *testing.T) {
 	time.Sleep(time.Second)
 
 	CStandings, err = api.GetContestStandings(566, nil, nil, 5, nil, nil)
-	assert.True(err != nil, "If end is not nil and start is nil then it should return an error\n")
-	assert.Equal(err.Error(), "If end is not nil, start must not be nil as well")
+	assert.True(err != nil, "If `end` is not nil and `start` is nil then it should return an error\n")
+	assert.Equal(err.Error(), "If `end` is not nil, `start` must not be nil as well")
 
 	CStandings, err = api.GetContestStandings(566, []string{"rng_58", "Errichto", "I_Love_Tina"}, nil, nil, nil, nil)
 	assert.True(err == nil, "Expected no error while getting contest standings for handles rng_58;Erricho;I_Love_Tina")
@@ -299,22 +299,22 @@ func TestGetContestStandings(t *testing.T) {
 	time.Sleep(time.Second)
 
 	CStandings, err = api.GetContestStandings(566, nil, nil, nil, 20, nil)
-	assert.True(err == nil, "Expected no error while getting contest standings from room 5")
+	assert.True(err == nil, "Expected no error while getting contest standings from `room` 5")
 	assert.Equal(len(CStandings.Rows), 40)
 
 	CStandings, err = api.GetContestStandings(6669, nil, nil, nil, nil, nil)
-	assert.True(err != nil, "Expected error while getting results from a contest with ID 6669, got none")
+	assert.True(err != nil, "Expected error while getting results from a contest with `contestID` 6669, got none")
 	assert.Equal(err.Error(), "contestId: Contest with id 6669 not found")
 
 	CStandings, err = api.GetContestStandings(566, make([]string, 10005), nil, nil, nil, nil)
-	assert.True(err != nil, "Expected error while querying more than 10000 handles, got none")
+	assert.True(err != nil, "Expected error while querying ContestStandings from more than 10000 handles, got none")
 	assert.Equal(err.Error(), "Expected at most 10000 handles")
 
 	CStandings, err = api.GetContestStandings(566, nil, "", nil, nil, nil)
-	assert.True(err != nil, "Expected error if start is not int")
+	assert.True(err != nil, "Expected error if `start` is not int")
 
 	CStandings, err = api.GetContestStandings(566, nil, nil, "", nil, nil)
-	assert.True(err != nil, "Expected error if end is not int")
+	assert.True(err != nil, "Expected error if `end` is not int")
 
 	time.Sleep(time.Second)
 
@@ -322,18 +322,18 @@ func TestGetContestStandings(t *testing.T) {
 	assert.True(err != nil, "Expected error if room is not int")
 
 	CStandings, err = api.GetContestStandings(566, nil, nil, nil, nil, 0)
-	assert.True(err != nil, "Expected error if showUnofficial is not bool")
+	assert.True(err != nil, "Expected error if `showUnofficial` is not bool")
 }
 
 func TestGetContestStatus(t *testing.T) {
 	assert := assert.New(t)
 	submissions, err := api.GetContestStatus(566, nil, 3, 13)
-	assert.True(err == nil, "Expected no error while extracting submissions from contest 566, start = 3,end = 13")
-	assert.Equal(len(submissions), 11, "Expected 11 submissions while extracting submissions from contest 566, start = 3,end = 13, got %d", len(submissions))
+	assert.True(err == nil, "Expected no error while extracting submissions from contest with `contestID` 566, `start` = 3,`end` = 13")
+	assert.Equal(len(submissions), 11, "Expected 11 submissions while extracting submissions from contest with `contestID` 566, `start` = 3,`end` = 13, got %d", len(submissions))
 
 	submissions, err = api.GetContestStatus(1179, "I_Love_Tina", 1, 1)
-	assert.True(err == nil, "Expected no error while extracting submissions from contest 1179 with handle I_Love_Tina the most recent submission")
-	assert.Equal(len(submissions), 1, "Expected one submission while extracting the most recent submission from contest 1179 with handle I_Love_Tina, got %d", len(submissions))
+	assert.True(err == nil, "Expected no error while extracting submissions from contes with `contestID` 1179 with handle I_Love_Tina the most recent submission")
+	assert.Equal(len(submissions), 1, "Expected one submission while extracting the most recent submission from contest with `contestID` 1179 with handle I_Love_Tina, got %d", len(submissions))
 	assert.Equal(submissions[0], api.Submission{
 		ID:                  56038919,
 		ContestID:           1179,
@@ -368,8 +368,8 @@ func TestGetContestStatus(t *testing.T) {
 	})
 
 	_, err = api.GetContestStatus(6669, nil, nil, nil)
-	assert.True(err != nil, "Expected erorr while trying to extract submissions from contest with ID 6669")
-	assert.Equal(err.Error(), "contestId: Contest with id 6669 not found", "Expected a different erorr while trying to extract submissions from contest with ID 6669")
+	assert.True(err != nil, "Expected erorr while trying to extract submissions from contest with `contestID` 6669")
+	assert.Equal(err.Error(), "contestId: Contest with id 6669 not found", "Expected a different erorr while trying to extract submissions from contest with `contestID` 6669")
 
 	time.Sleep(time.Second)
 }
@@ -413,18 +413,18 @@ func TestGetPsetRecentStatus(t *testing.T) {
 
 	_, err = api.GetPsetRecentStatus(69, 3.14)
 	assert.True(err != nil, "Expected error if `psetName` type is not string")
-	assert.Equal(err.Error(), "problemsetName must have type string", "Expected a different error if `psetName` type is not string")
+	assert.Equal(err.Error(), "`psetName` must have type string", "Expected a different error if `psetName` type is not string")
 
 	_, err = api.GetPsetRecentStatus(1001, nil)
 	assert.True(err != nil, "Expected error if `countv` is bigger than 1000")
-	assert.Equal(err.Error(), "count cannot be more than 1000", "Expected a different error if `countv` is bigger 1000")
+	assert.Equal(err.Error(), "`countv` cannot be more than 1000", "Expected a different error if `countv` is bigger 1000")
 }
 
 func TestGetPsetRecentActions(t *testing.T) {
 	assert := assert.New(t)
 	_, err := api.GetPsetRecentActions(101)
 	assert.True(err != nil, "Expected error is `maxCount` is bigger than 100")
-	assert.Equal(err.Error(), "maxCount cannot be more than 100", "Expected a different error when `maxCount` is bigger than 100")
+	assert.Equal(err.Error(), "`maxCount` cannot be more than 100", "Expected a different error when `maxCount` is bigger than 100")
 
 	time.Sleep(time.Second)
 
@@ -484,10 +484,10 @@ func TestGetBlogEntries(t *testing.T) {
 		Rating:                  blogs[6].Rating,
 		AuthorHandle:            "I_Love_Tina",
 		ModificationTimeSeconds: blogs[6].ModificationTimeSeconds,
-		ID:     45896,
-		Title:  "\u003cp\u003eCodeforces Round #361 (Div. 2)\u003c/p\u003e",
-		Locale: "en",
-		Tags:   []string{},
+		ID:                      45896,
+		Title:                   "\u003cp\u003eCodeforces Round #361 (Div. 2)\u003c/p\u003e",
+		Locale:                  "en",
+		Tags:                    []string{},
 	})
 
 	_, err = api.GetBlogEntries("69")
@@ -529,8 +529,8 @@ func TestGetRatedList(t *testing.T) {
 	assert.Truef(nUsers > len(users), "The number of users while showing only showing active only must be smaller (which is %d) than total number of users (which is %d)", len(users), nUsers)
 
 	_, err = api.GetRatedList(3.14)
-	assert.True(err != nil, "Expected error when activeOnly type is not bool")
-	assert.Equal(err.Error(), "activeOnly must have type bool", "Expected a different error when activeOnly type is not bool")
+	assert.True(err != nil, "Expected error when `activeOnly` type is not bool")
+	assert.Equal(err.Error(), "`activeOnly` must have type bool", "Expected a different error when `activeOnly` type is not bool")
 }
 
 func TestGetUserRatings(t *testing.T) {
@@ -540,10 +540,10 @@ func TestGetUserRatings(t *testing.T) {
 	assert.True(err == nil, "Expected no error while extracting the rating changes from user 'I_Love_Tina'")
 	assert.Equal(len(changes), 112, "User 'I_Love_Tina' has 112 official contests")
 	assert.Equal(changes[1], api.RatingChange{
-		ContestID:   447,
-		ContestName: "Codeforces Round #FF (Div. 2)",
-		Handle:      "I_Love_Tina",
-		Rank:        1518,
+		ContestID:               447,
+		ContestName:             "Codeforces Round #FF (Div. 2)",
+		Handle:                  "I_Love_Tina",
+		Rank:                    1518,
 		RatingUpdateTimeSeconds: 1405263600,
 		OldRating:               1439,
 		NewRating:               1350,
@@ -600,13 +600,13 @@ func TestGetUserStatus(t *testing.T) {
 
 	_, err = api.GetUserStatus("I_Love_Tina", nil, 5)
 	assert.True(err != nil, "Expected error while extracting the submissions from user 'I_Love_Tina' with start = nil and end = 5")
-	assert.Equal(err.Error(), "If end is not nil then from should not be nil as well", "Expected a different error while extracting the submissions from user 'I_Love_Tina' with start = nil and end = 5")
+	assert.Equal(err.Error(), "If `end` is not nil then from should not be nil as well", "Expected a different error while extracting the submissions from user 'I_Love_Tina' with `start` = nil and `end` = 5")
 
 	_, err = api.GetUserStatus("I_Love_Tina", 3.5, nil)
-	assert.True(err != nil, "Expected error if start type is not int")
+	assert.True(err != nil, "Expected error if `start` type is not int")
 
 	_, err = api.GetUserStatus("I_Love_Tina", 3, "")
-	assert.True(err != nil, "Expected error if end type is not int")
+	assert.True(err != nil, "Expected error if `end` type is not int")
 
 	time.Sleep(time.Second)
 
