@@ -1,0 +1,20 @@
+<h1>Both users {{.User1}} and {{.User2}} solved the following problems </h1>
+<ul>
+	{{range .CommonProblems}}
+	<li> Problem {{.Name}} solved by {{.SolvedCount}} users </li>
+	{{end}}
+</ul>
+
+<h1>{{.User1}} is the only one who solved the following problems </h1>
+<ul>
+	{{range .Problems1}}
+	<li> Problem {{.Name}} solved by {{.SolvedCount}} users </li>
+	{{end}}
+</ul>
+
+<h1>{{.User2}} is the only one who solved the following problems </h1>
+<ul>
+	{{range .Problems2}}
+	<li> Problem {{.Name}} solved by {{.SolvedCount}} users </li>
+	{{end}}
+</ul>

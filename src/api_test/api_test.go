@@ -1,10 +1,10 @@
 package api_test
 
 import (
-	"github.com/reality95/cf-predictor/src/api"
-	"github.com/stretchr/testify/assert"
-	"testing"
 	"time"
+	"testing"
+	"github.com/stretchr/testify/assert"
+	"github.com/reality95/cf-predictor/src/api"
 )
 
 func TestGetComments(t *testing.T) {
