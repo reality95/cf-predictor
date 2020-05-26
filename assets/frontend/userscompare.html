@@ -1,20 +1,60 @@
-<h1>Both users {{.User1}} and {{.User2}} solved the following problems </h1>
-<ul>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  text-align: left;
+}
+</style>
+</head>
+<body>
+
+<h2>Both users {{.User1}} and {{.User2}} solved the following problems </h2>
+<table style="width:100%">
+	<tr>
+	<th> Name of the Problem </th>
+	<th> Solved Count </th>
+	</tr>
 	{{range .CommonProblems}}
-	<li> Problem {{.Name}} solved by {{.SolvedCount}} users </li>
+	<tr>
+	<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
+	<th> {{.SolvedCount}} </th>
+	</tr>
 	{{end}}
-</ul>
+</table>
 
-<h1>{{.User1}} is the only one who solved the following problems </h1>
-<ul>
+<h2>{{.User1}} is the only one who solved the following problems </h2>
+<table style="width:100%">
+	<tr>
+	<th> Name of the Problem </th>
+	<th> Solved Count </th>
+	</tr>
 	{{range .Problems1}}
-	<li> Problem {{.Name}} solved by {{.SolvedCount}} users </li>
+	<tr>
+	<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
+	<th> {{.SolvedCount}} </th>
+	</tr>
 	{{end}}
-</ul>
+</table>
 
-<h1>{{.User2}} is the only one who solved the following problems </h1>
-<ul>
+<h2>{{.User2}} is the only one who solved the following problems </h2>
+<table style="width:100%">
+	<tr>
+	<th> Name of the Problem </th>
+	<th> Solved Count </th>
+	</tr>
 	{{range .Problems2}}
-	<li> Problem {{.Name}} solved by {{.SolvedCount}} users </li>
+	<tr>
+	<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
+	<th> {{.SolvedCount}} </th>
+	</tr>
 	{{end}}
-</ul>
+</table>
+
+</body>
+</html>

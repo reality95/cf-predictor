@@ -71,15 +71,19 @@ func HandleUsersCompare(w http.ResponseWriter, r *http.Request) {
 		d := strings.Split(prob, "#")
 
 		if sCount, ok := solveCount[d[0]]; ok {
+			tmp := strings.Split(d[0],"$")
+			contestID, Index := tmp[0], tmp[1]
 			if p2[prob] && c {
 				data.CommonProblems = append(data.CommonProblems, problemStats{
 					Name:        d[1],
 					SolvedCount: sCount,
+					Link : getProblemLink(contestID,Index),
 				})
 			} else if c {
 				data.Problems1 = append(data.Problems1, problemStats{
 					Name:        d[1],
 					SolvedCount: sCount,
+					Link : getProblemLink(contestID,Index),
 				})
 			}
 		}
@@ -89,10 +93,13 @@ func HandleUsersCompare(w http.ResponseWriter, r *http.Request) {
 		d := strings.Split(prob, "#")
 
 		if sCount, ok := solveCount[d[0]]; ok {
+			tmp := strings.Split(d[0],"$")
+			contestID, Index := tmp[0], tmp[1]
 			if !p1[prob] && c {
 				data.Problems2 = append(data.Problems2, problemStats{
 					Name:        d[1],
 					SolvedCount: sCount,
+					Link : getProblemLink(contestID,Index),
 				})
 			}
 		}
@@ -111,6 +118,10 @@ func HandleUsersCompare(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, data)
 }
 
+func getProblemLink(contestID,Index string) string {
+	return "https://codeforces.com/contest/" + contestID + "/problem/" + Index
+}
+
 type usersCompare struct {
 	User1          string
 	User2          string
@@ -121,5 +132,6 @@ type usersCompare struct {
 
 type problemStats struct {
 	Name        string
+	Link 		string
 	SolvedCount int
 }

@@ -13,14 +13,14 @@ import (
 func HandleUserStats(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("assets/frontend/userstats.html")
 	if err != nil {
-		log.Printf("Erorr while extracting userstats.html, %s\n", err.Error())
+		log.Printf("Error while extracting userstats.html, %s\n", err.Error())
 		fmt.Fprintf(w, "Internal error\n")
 		return
 	}
 	handle := strings.TrimPrefix(r.URL.Path, "/userstats/")
 	submissions, err := api.GetUserStatus(handle, nil, nil)
 	if err != nil {
-		fmt.Fprintf(w, "Erorr while extracting user status %s", err.Error())
+		fmt.Fprintf(w, "Error while extracting user status %s", err.Error())
 	} else {
 		count := make(map[string]int)
 		for _, s := range submissions {
