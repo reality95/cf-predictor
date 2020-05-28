@@ -7,9 +7,10 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/userstats/", frontend.HandleUserStats)
-	http.HandleFunc("/userscompare/", frontend.HandleUsersCompare)
+	http.HandleFunc("/UserStatistics/", frontend.HandleUserStats)
+	http.HandleFunc("/CompareUsers/", frontend.HandleCompareUsers)
 	http.HandleFunc("/",frontend.HandleIndex)
+	http.HandleFunc("/Home/",frontend.HandleIndex)
 	http.ListenAndServe(":8080", nil)
 	log.Println("Hello word")
 }

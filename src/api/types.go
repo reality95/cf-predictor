@@ -1,5 +1,7 @@
 package api
 
+import "strconv"
+
 type Comment struct {
 	ID                  int    `json:"id"`
 	CreationTimeSeconds int    `json:"creationTimeSeconds"`
@@ -108,10 +110,33 @@ type Problem struct {
 	Tags      []string `json:"tags"`
 }
 
+func (p Problem) Link() string {
+	return "https://codeforces.com/contest/" + strconv.Itoa(p.ContestID) + "/problem/" + p.Index
+}
+
+func (p Problem) Hash() string {
+	return strconv.Itoa(p.ContestID) + "$" + p.Index
+}
+
+func LessProblem(a, b Problem) bool {
+	if a.ContestID != b.ContestID {
+		return a.ContestID < b.ContestID
+	}
+	return a.Index < b.Index
+}
+
+func EqProblem(a, b Problem) bool {
+	return a.ContestID == b.ContestID && a.Index == b.Index && a.Name == b.Name
+}
+
 type ProblemStatistics struct {
 	ContestID   int    `json:"contestId"`
 	Index       string `json:"index"`
 	SolvedCount int    `json:"solvedCount"`
+}
+
+func (pStat ProblemStatistics) Hash() string {
+	return strconv.Itoa(pStat.ContestID) + "$" + pStat.Index
 }
 
 type PsetProblems struct {

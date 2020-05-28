@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
+<style type="text/css">
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
@@ -10,51 +10,92 @@ th, td {
   padding: 5px;
   text-align: left;
 }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
 </style>
 </head>
 <body>
+<div class="topnav">
+<a class="active" href="/Home">Home</a>
+<a href="/UserStatistics">User Statistics</a>
+<a href="/CompareUsers">Compare Users</a>
+<a href="About">About</a>
+</div>
+{{if .CompareUsers}}
+	<h1> Compare the users </h1>
+	<form method = "POST">
+	<label for="handle1"> </label> <input type="text" name="handle1">
+	<form method = "POST">
+	<label for="handle2"> </label> <input type="text" name="handle2">
+	<input type="submit" name="Submit"><br />
+{{else}}
+	<h2>Both users {{.User1}} and {{.User2}} solved the following problems </h2>
+	<table style="width:100%">
+		<tr>
+		<th> Name of the Problem </th>
+		<th> Solved Count </th>
+		</tr>
+		{{range .CommonProblems}}
+		<tr>
+		<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
+		<th> {{.SolvedCount}} </th>
+		</tr>
+		{{end}}
+	</table>
 
-<h2>Both users {{.User1}} and {{.User2}} solved the following problems </h2>
-<table style="width:100%">
-	<tr>
-	<th> Name of the Problem </th>
-	<th> Solved Count </th>
-	</tr>
-	{{range .CommonProblems}}
-	<tr>
-	<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
-	<th> {{.SolvedCount}} </th>
-	</tr>
-	{{end}}
-</table>
+	<h2>{{.User1}} is the only one who solved the following problems </h2>
+	<table style="width:100%">
+		<tr>
+		<th> Name of the Problem </th>
+		<th> Solved Count </th>
+		</tr>
+		{{range .Problems1}}
+		<tr>
+		<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
+		<th> {{.SolvedCount}} </th>
+		</tr>
+		{{end}}
+	</table>
 
-<h2>{{.User1}} is the only one who solved the following problems </h2>
-<table style="width:100%">
-	<tr>
-	<th> Name of the Problem </th>
-	<th> Solved Count </th>
-	</tr>
-	{{range .Problems1}}
-	<tr>
-	<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
-	<th> {{.SolvedCount}} </th>
-	</tr>
-	{{end}}
-</table>
-
-<h2>{{.User2}} is the only one who solved the following problems </h2>
-<table style="width:100%">
-	<tr>
-	<th> Name of the Problem </th>
-	<th> Solved Count </th>
-	</tr>
-	{{range .Problems2}}
-	<tr>
-	<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
-	<th> {{.SolvedCount}} </th>
-	</tr>
-	{{end}}
-</table>
-
+	<h2>{{.User2}} is the only one who solved the following problems </h2>
+	<table style="width:100%">
+		<tr>
+		<th> Name of the Problem </th>
+		<th> Solved Count </th>
+		</tr>
+		{{range .Problems2}}
+		<tr>
+		<th> <a href="{{.Link}}"> {{.Name}} </a> </th> 
+		<th> {{.SolvedCount}} </th>
+		</tr>
+		{{end}}
+	</table>
+{{end}}
 </body>
 </html>
