@@ -500,6 +500,11 @@ func TestGetBlogEntries(t *testing.T) {
 	assert.Equal(err.Error(), "handle: You are not allowed to read that blog", "Expected a a different error while extracting the blog from users with handle '666'")
 }
 
+/*
+	For some reason this unit test is not always passing. It might be
+	because of Codeforces' issues. It takes a lot of time to get this
+	request.
+*/
 func TestGetRatedList(t *testing.T) {
 	assert := assert.New(t)
 	tmp, _ := api.GetUserInfo([]string{"tourist"})
@@ -526,7 +531,7 @@ func TestGetRatedList(t *testing.T) {
 	for _, user := range users {
 		assert.True(user != reality, "User I_Love_Tina is not active")
 	}
-	assert.Truef(nUsers > len(users), "The number of users while showing only showing active only must be smaller (which is %d) than total number of users (which is %d)", len(users), nUsers)
+	assert.Truef(nUsers > len(users), "The number of users while showing only showing active only (which is %d) must be smaller than total number of users (which is %d)", len(users), nUsers)
 
 	_, err = api.GetRatedList(3.14)
 	assert.True(err != nil, "Expected error when `activeOnly` type is not bool")

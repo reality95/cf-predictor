@@ -9,6 +9,10 @@ import (
 	"strconv"
 )
 
+/*
+	All the methods are described in the following link: https://codeforces.com/apiHelp/methods
+*/
+
 //GetComments ... getting the list of comments from blog with blog ID `blogID`
 func GetComments(blogID int) ([]Comment, error) {
 	resp, err := http.Get("https://codeforces.com/api/blogEntry.comments?blogEntryId=" + strconv.Itoa(blogID))

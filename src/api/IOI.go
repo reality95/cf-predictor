@@ -21,10 +21,10 @@ const suffixContestantsInfo string = `</td>`
 //ExtractYearInfo ... extracts the contestants' info and contest's info from year `year`
 /*
 	If CFHandleInclude is true then in the contestant's info CFHandle will be included.
-	This idea behind this parameter is that the time it takes to extract the CFHandle is 
+	This idea behind this parameter is that the time it takes to extract the CFHandle is
 	significantly bigger than all other information
 */
-func ExtractYearInfo(year int,CFHandleInclude bool) (contestants []IOIContestant, info IOIInfo, err error) {
+func ExtractYearInfo(year int, CFHandleInclude bool) (contestants []IOIContestant, info IOIInfo, err error) {
 	if year < 1989 {
 		return nil, info, errors.New("IOI started at 1989, so year must be at least 1989")
 	}
@@ -59,7 +59,7 @@ func ExtractYearInfo(year int,CFHandleInclude bool) (contestants []IOIContestant
 		var contestant IOIContestant
 		for j := 0; j < 4; j++ {
 			l, r := tmp[4*i+j][0], tmp[4*i+j][1]
-			sValue := string(reSuffix.ReplaceAll(rePrefix.ReplaceAll([]byte(plainText[l : r]), nil), nil))
+			sValue := string(reSuffix.ReplaceAll(rePrefix.ReplaceAll([]byte(plainText[l:r]), nil), nil))
 			if j == 0 && sValue != "" {
 				contestant.Rank, err = strconv.Atoi(sValue)
 				if err != nil {
@@ -82,10 +82,14 @@ func ExtractYearInfo(year int,CFHandleInclude bool) (contestants []IOIContestant
 					contestant.Medal = sValue
 				}
 				switch sValue {
-					case "Gold":info.Gold++
-					case "Silver":info.Silver++
-					case "Bronze":info.Bronze++
-					case "":info.NoMedal++
+				case "Gold":
+					info.Gold++
+				case "Silver":
+					info.Silver++
+				case "Bronze":
+					info.Bronze++
+				case "":
+					info.NoMedal++
 				}
 			}
 		}
@@ -104,7 +108,7 @@ func ExtractYearInfo(year int,CFHandleInclude bool) (contestants []IOIContestant
 }
 
 //ExtractContestantInfo ... finds the results of the contestant with id `ID` from all years
-func ExtractContestantInfo(ID int) (ans map[int]IOIContestant,err error) {
+func ExtractContestantInfo(ID int) (ans map[int]IOIContestant, err error) {
 	ans = make(map[int]IOIContestant)
 
 	resp, err := http.Get("https://stats.ioinformatics.org/people/" + strconv.Itoa(ID))
@@ -115,6 +119,12 @@ func ExtractContestantInfo(ID int) (ans map[int]IOIContestant,err error) {
 	plainText, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return ans, err
+	}
+
+	//Delete the suffix that does not give information about participation as contestant
+	idx := strings.Index(string(plainText), "Delegation member")
+	if idx != -1 {
+		plainText = plainText[:idx]
 	}
 
 	prefix := prefixContestantsInfo
@@ -128,29 +138,28 @@ func ExtractContestantInfo(ID int) (ans map[int]IOIContestant,err error) {
 	Name := extractName(string(plainText))
 	CFHandle, _ := ExtractCFHandle(ID)
 
-
-	for i,plainTextSlice := range slices {
+	for i, plainTextSlice := range slices {
 		var contestant IOIContestant
-		tmp := re.FindAllIndex([]byte(plainTextSlice),-1)
-		for j := 0;j < 4;j++ {
-			l,r := tmp[j][0],tmp[j][1]
-			sValue := string(reSuffix.ReplaceAll(rePrefix.ReplaceAll([]byte(plainTextSlice[l : r]), nil), nil))
-			if j == 0 && sValue != "" {
-				contestant.Rank, err = strconv.Atoi(sValue)
+		tmp := re.FindAllIndex([]byte(plainTextSlice), -1)
+		for j := 0; j < 5; j++ {
+			l, r := tmp[j][0], tmp[j][1]
+			sValue := string(reSuffix.ReplaceAll(rePrefix.ReplaceAll([]byte(plainTextSlice[l:r]), nil), nil))
+			if j == 2 && sValue != "" {
+				contestant.Rank, err = strconv.Atoi(strings.Split(sValue, "/")[0])
 				if err != nil {
 					panic(err.Error())
 				}
-			} else if j == 1 {
+			} else if j == 0 {
 				contestant.ScoreSum, err = strconv.ParseFloat(sValue, 64)
 				if err != nil {
 					panic(err.Error())
 				}
-			} else if j == 2 {
+			} else if j == 1 {
 				contestant.Rel, err = strconv.ParseFloat(sValue[:len(sValue)-1], 64) //Ignore the last '%'
 				if err != nil {
 					panic(err.Error())
 				}
-			} else if j == 3 {
+			} else if j == 4 {
 				if sValue == "" {
 					contestant.Medal = "No Medal"
 				} else {
@@ -158,6 +167,7 @@ func ExtractContestantInfo(ID int) (ans map[int]IOIContestant,err error) {
 				}
 			}
 		}
+		contestant.Country = extractCountry(plainTextSlice)
 		contestant.ID = ID
 		contestant.Name = Name
 		contestant.CFHandle = CFHandle
@@ -192,7 +202,7 @@ func ExtractCFHandle(ID int) (string, error) {
 	rePrefix := regexp.MustCompile(prefix)
 	reSuffix := regexp.MustCompile(suffix)
 
-	return string(rePrefix.ReplaceAll(reSuffix.ReplaceAll(re.Find(plainText),nil),nil)), nil
+	return string(rePrefix.ReplaceAll(reSuffix.ReplaceAll(re.Find(plainText), nil), nil)), nil
 }
 
 const prefixTasks string = `href="tasks/`
@@ -211,7 +221,7 @@ func extractTaskNames(plainText string, year int) (ans []string) {
 	rePrefix := regexp.MustCompile((prefix))
 	reSuffix := regexp.MustCompile((suffix))
 
-	tmp := re.FindAll([]byte(plainText),-1)
+	tmp := re.FindAll([]byte(plainText), -1)
 
 	for _, dirtyName := range tmp {
 		ans = append(ans, string(reSuffix.ReplaceAll(rePrefix.ReplaceAll([]byte(dirtyName), nil), nil)))
@@ -243,7 +253,7 @@ func extractIDName(plainTextSlice string) (ID int, Name string) {
 	return ID, Name
 }
 
-const prefixCountry string = `href="(countries|delegations)/[A-Z]+">`
+const prefixCountry string = `href="(countries|delegations)/[A-Z]+(/[0-9]+)?">`
 const suffixCountry string = `</a>`
 
 /*
@@ -254,17 +264,19 @@ const suffixCountry string = `</a>`
 func extractCountry(plainTextSlice string) string {
 	prefix := prefixCountry
 	suffix := suffixCountry
-	re := regexp.MustCompile(prefix + `[A-Za-z ]+(Delegations){0}?` + suffix)
+	re := regexp.MustCompile(prefix + `[A-Za-z ]+` + suffix)
 	rePrefix := regexp.MustCompile(prefix)
 	reSuffix := regexp.MustCompile(suffix)
-	return string(reSuffix.ReplaceAll(rePrefix.ReplaceAll(re.Find([]byte(plainTextSlice)),nil),nil))
+	return string(reSuffix.ReplaceAll(rePrefix.ReplaceAll(re.Find([]byte(plainTextSlice)), nil), nil))
 }
 
 const prefixTaskScore string = `class="[a-z]* ?taskscore">(<a href="tasks/[0-9]+/[A-Za-z ]+">)?`
-const suffixTaskScore string = `</td>`
+const suffixTaskScore string = `(</a>|</td>)`
 
 /*
 	The scores can be found under `class="[a-z]* ?taskscore">{{.Score}}</td>`
+	in the case of extracting year info, otherwise it can be found under
+	`class="[a-z]* ?taskscore"><a href="tasks/{{.Year}}/{{.TaskName}}">{{.TaskScore}}</a>`
 */
 
 func extractTaskScores(plainTextSlice string) (Scores []float64) {
@@ -273,7 +285,7 @@ func extractTaskScores(plainTextSlice string) (Scores []float64) {
 	re := regexp.MustCompile((prefix + `[0-9]*.?[0-9]*` + suffix))
 	rePrefix := regexp.MustCompile((prefix))
 	reSuffix := regexp.MustCompile((suffix))
-	tmp := re.FindAll([]byte(plainTextSlice),-1)
+	tmp := re.FindAll([]byte(plainTextSlice), -1)
 	for _, dirtyScore := range tmp {
 		number, err := strconv.ParseFloat(string(reSuffix.ReplaceAll(rePrefix.ReplaceAll([]byte(dirtyScore), nil), nil)), 64)
 		if err != nil {
@@ -292,7 +304,7 @@ const suffixYear string = `</a>`
 	plus the years in which contestant has participated in
 */
 
-func extractYears(plainText string) (ans []string,years []int) {
+func extractYears(plainText string) (ans []string, years []int) {
 	prefix := prefixYear
 	suffix := suffixYear
 	re := regexp.MustCompile(prefix + `[0-9]+` + suffix)
@@ -301,19 +313,20 @@ func extractYears(plainText string) (ans []string,years []int) {
 
 	tmp := re.FindAllIndex([]byte(plainText), -1)
 	for i, Indices := range tmp {
-		l := Indices[1]
-		var r int
+		l, r := Indices[0], Indices[1]
+		year, err := strconv.Atoi(string(rePrefix.ReplaceAll(reSuffix.ReplaceAll([]byte(plainText[l:r]), nil), nil)))
+		if err != nil {
+			panic(err.Error())
+		}
+		years = append(years, year)
+
+		l = Indices[1]
 		if i+1 < len(tmp) {
 			r = tmp[i+1][0]
 		} else {
 			r = len(plainText)
 		}
-		ans = append(ans,plainText[l : r])
-		year, err := strconv.Atoi(string(rePrefix.ReplaceAll(reSuffix.ReplaceAll([]byte(plainText),nil),nil)))
-		if err != nil {
-			panic(err.Error())
-		}
-		years = append(years,year)
+		ans = append(ans, plainText[l:r])
 	}
 	return ans, years
 }
@@ -324,11 +337,9 @@ const suffixTitle string = `</title>`
 func extractName(plainText string) string {
 	prefix := prefixTitle
 	suffix := suffixTitle
-	
-	re := regexp.MustCompile(prefix + `[^<]` + suffix)
-	return strings.TrimPrefix(strings.TrimSuffix(string(re.Find([]byte(plainText))),suffix),prefix)
+	re := regexp.MustCompile(prefix + `[^<]+` + suffix)
+	return strings.TrimPrefix(strings.TrimSuffix(string(re.Find([]byte(plainText))), suffix), prefix)
 }
-
 
 //IOIContestant ... struct representing the info related to a contestant's for a year
 type IOIContestant struct {

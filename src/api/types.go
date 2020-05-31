@@ -2,6 +2,7 @@ package api
 
 import "strconv"
 
+//Comment ... Comment object described here: https://codeforces.com/apiHelp/objects
 type Comment struct {
 	ID                  int    `json:"id"`
 	CreationTimeSeconds int    `json:"creationTimeSeconds"`
@@ -12,6 +13,7 @@ type Comment struct {
 	Rating              int    `json:"rating"`
 }
 
+//BlogEntry ... BlogEntry object described here: https://codeforces.com/apiHelp/objects
 type BlogEntry struct {
 	ID                      int      `json:"id"`
 	OriginalLocale          string   `json:"originalLocale"`
@@ -26,6 +28,7 @@ type BlogEntry struct {
 	Rating                  int      `json:"rating"`
 }
 
+//User ... User object described here: https://codeforces.com/apiHelp/objects
 type User struct {
 	Handle                  string `json:"handle"`
 	Email                   string `json:"email"`
@@ -48,12 +51,14 @@ type User struct {
 	TitlePhoto              string `json:"titlePhoto"`
 }
 
+//RecentAction ... RecentAction object described here: https://codeforces.com/apiHelp/objects
 type RecentAction struct {
 	TimeSeconds int       `json:"timeSeconds"`
 	BlogEntryv  BlogEntry `json:"blogEntry"`
 	Commentv    Comment   `json:"comment"`
 }
 
+//RatingChange ... RatingChange object described here: https://codeforces.com/apiHelp/objects
 type RatingChange struct {
 	ContestID               int    `json:"contestId"`
 	ContestName             string `json:"contestName"`
@@ -64,6 +69,7 @@ type RatingChange struct {
 	NewRating               int    `json:"newRating"`
 }
 
+//Contest ... Contest object described here: https://codeforces.com/apiHelp/objects
 type Contest struct {
 	ID                  int    `json:"id"`
 	Name                string `json:"name"`
@@ -84,10 +90,12 @@ type Contest struct {
 	Season              string `json:"season"`
 }
 
+//Member ... Member object described here: https://codeforces.com/apiHelp/objects
 type Member struct {
 	Handle string `json:"handle"`
 }
 
+//Party ... Party object described here: https://codeforces.com/apiHelp/objects
 type Party struct {
 	ContestID        int      `json:"contestId"`
 	Members          []Member `json:"members"`
@@ -99,6 +107,7 @@ type Party struct {
 	StartTimeSeconds int      `json:"startTimeSeconds"`
 }
 
+//Problem ... Problem object described here: https://codeforces.com/apiHelp/objects
 type Problem struct {
 	ContestID int      `json:"contestId"`
 	PsetName  string   `json:"problemsetName"`
@@ -110,14 +119,17 @@ type Problem struct {
 	Tags      []string `json:"tags"`
 }
 
+//Link ... the link of the problem if it is not from acm sgu problemset
 func (p Problem) Link() string {
 	return "https://codeforces.com/contest/" + strconv.Itoa(p.ContestID) + "/problem/" + p.Index
 }
 
+//Hash ... a string hash of the problem object
 func (p Problem) Hash() string {
 	return strconv.Itoa(p.ContestID) + "$" + p.Index
 }
 
+//LessProblem ... a comparative function for Problem object
 func LessProblem(a, b Problem) bool {
 	if a.ContestID != b.ContestID {
 		return a.ContestID < b.ContestID
@@ -125,25 +137,32 @@ func LessProblem(a, b Problem) bool {
 	return a.Index < b.Index
 }
 
+//EqProblem ... compares if two problems are equal
 func EqProblem(a, b Problem) bool {
 	return a.ContestID == b.ContestID && a.Index == b.Index && a.Name == b.Name
 }
 
+//ProblemStatistics ... ProblemStatistics object described here: https://codeforces.com/apiHelp/objects
 type ProblemStatistics struct {
 	ContestID   int    `json:"contestId"`
 	Index       string `json:"index"`
 	SolvedCount int    `json:"solvedCount"`
 }
 
+//Hash ... a string hash of ProblemStatistics object, if compared to hash of a Problem
+//will be equal if it represents the problem statistics of that problem
 func (pStat ProblemStatistics) Hash() string {
 	return strconv.Itoa(pStat.ContestID) + "$" + pStat.Index
 }
 
+//PsetProblems ... contains the object from problemset.problems described here:
+//												https://codeforces.com/apiHelp/methods
 type PsetProblems struct {
 	Problems []Problem           `json:"problems"`
 	PStats   []ProblemStatistics `json:"problemStatistics"`
 }
 
+//Submission ... Submission object described here: https://codeforces.com/apiHelp/objects
 type Submission struct {
 	ID                  int     `json:"id"`
 	ContestID           int     `json:"contestId"`
@@ -159,12 +178,14 @@ type Submission struct {
 	MemoryConsumedBytes int     `json:"memoryConsumedBytes"`
 }
 
+//JProtocol ... an object contained into struct hack described here: https://codeforces.com/apiHelp/objects
 type JProtocol struct {
 	Manual   string `json:"manual"`
 	Protocol string `json:"protocol"`
 	Verdict  string `json:"verdict"`
 }
 
+//Hack ... Hack object described here: https://codeforces.com/apiHelp/objects
 type Hack struct {
 	ID                  int       `json:"id"`
 	CreationTimeSeconds int       `json:"creationTimeSeconds"`
@@ -176,6 +197,7 @@ type Hack struct {
 	JudgeProtocol       JProtocol `json:"judgeProtocol"`
 }
 
+//RanklistRow ... RanklistRow object described here: https://codeforces.com/apiHelp/objects
 type RanklistRow struct {
 	Partyv                    Party           `json:"party"`
 	Rank                      int             `json:"rank"`
@@ -187,6 +209,7 @@ type RanklistRow struct {
 	LastSubmissionTimeSeconds int             `json:"lastSubmissionTimeSeconds"`
 }
 
+//ProblemResult ... ProblemResult object described here: https://codeforces.com/apiHelp/objects
 type ProblemResult struct {
 	Points                    float64 `json:"points"`
 	Penalty                   int     `json:"penalty"`
@@ -195,101 +218,135 @@ type ProblemResult struct {
 	BestSubmissionTimeSeconds int     `json:"bestSubmissionTimeSeconds"`
 }
 
+//ContestStandings ... contains the object from contest.standings described here:
+//													https://codeforces.com/apiHelp/methods
 type ContestStandings struct {
 	Contestv Contest       `json:"contest"`
 	Problems []Problem     `json:"problems"`
 	Rows     []RanklistRow `json:"rows"`
 }
 
+//ProblemsetProblems ... contains the object with the problems and problem statistics
+//from problemset.problems described here: https://codeforces.com/apiHelp/methods
 type ProblemsetProblems struct {
 	Problems []Problem
 	Stats    []ProblemStatistics
 }
 
+//RequestComments ... the object returned from blogEntry.comments described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestComments struct {
 	Status   string    `json:"status"`
 	Commentv string    `json:"comment"`
 	Result   []Comment `json:"result"`
 }
 
+//RequestBlog ... the object returned from blogEntry.view described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestBlog struct {
 	Status   string    `json:"status"`
 	Commentv string    `json:"comment"`
 	Result   BlogEntry `json:"result"`
 }
 
+//RequestHacks ... the object returned from contest.hacks described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestHacks struct {
 	Status   string `json:"status"`
 	Commentv string `json:"comment"`
 	Result   []Hack `json:"result"`
 }
 
+//RequestContests ... the object returned from contest.list described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestContests struct {
 	Status   string    `json:"status"`
 	Commentv string    `json:"comment"`
 	Result   []Contest `json:"result"`
 }
 
+//RequestRatingChange ... the object returned from contest.ratingChanges described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestRatingChange struct {
 	Status   string         `json:"status"`
 	Commentv string         `json:"comment"`
 	Result   []RatingChange `json:"result"`
 }
 
+//RequestContestStandings ... the object returned from contest.standings described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestContestStandings struct {
 	Status   string           `json:"status"`
 	Commentv string           `json:"comment"`
 	Result   ContestStandings `json:"result"`
 }
 
+//RequestContestStatus ... the object returned from contest.status described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestContestStatus struct {
 	Status   string       `json:"status"`
 	Commentv string       `json:"comment"`
 	Result   []Submission `json:"result"`
 }
 
+//RequestPsetProblems ... the object returned from problemset.problems described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestPsetProblems struct {
 	Status   string       `json:"status"`
 	Commentv string       `json:"comment"`
 	Result   PsetProblems `json:"result"`
 }
 
+//RequestRecentStatus ... the object returned from problemset.recentStatus described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestRecentStatus struct {
 	Status   string       `json:"status"`
 	Commentv string       `json:"comment"`
 	Result   []Submission `json:"result"`
 }
 
+//RequestRecentActions ... the object returned from recentActions described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestRecentActions struct {
 	Status   string         `json:"status"`
 	Commentv string         `json:"comment"`
 	Result   []RecentAction `json:"result"`
 }
 
+//RequestBlogEntries ... the object returned from user.blogEntries described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestBlogEntries struct {
 	Status   string      `json:"status"`
 	Commentv string      `json:"comment"`
 	Result   []BlogEntry `json:"result"`
 }
 
+//RequestUserInfo ... the object returned from user.info described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestUserInfo struct {
 	Status   string `json:"status"`
 	Commentv string `json:"comment"`
 	Result   []User `json:"result"`
 }
 
+//RequestRatedList ... the object returned from user.ratedList described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestRatedList struct {
 	Status   string `json:"status"`
 	Commentv string `json:"comment"`
 	Result   []User `json:"result"`
 }
 
+//RequestUserRating ... the object returned from user.rating described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestUserRating struct {
 	Status   string         `json:"status"`
 	Commentv string         `json:"comment"`
 	Result   []RatingChange `json:"result"`
 }
 
+//RequestUserStatus ... the object returned from user.status described here:
+//											https://codeforces.com/apiHelp/methods
 type RequestUserStatus struct {
 	Status   string       `json:"status"`
 	Commentv string       `json:"comment"`
