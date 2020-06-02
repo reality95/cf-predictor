@@ -107,6 +107,11 @@ type Party struct {
 	StartTimeSeconds int      `json:"startTimeSeconds"`
 }
 
+//Len ... the number of members in the party
+func (p Party) Len() int {
+	return len(p.Members)
+}
+
 //Problem ... Problem object described here: https://codeforces.com/apiHelp/objects
 type Problem struct {
 	ContestID int      `json:"contestId"`

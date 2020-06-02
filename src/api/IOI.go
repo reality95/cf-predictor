@@ -210,7 +210,7 @@ const suffixTasks string = `">`
 
 /*
 	The `Tasks` can be found only under the format `<a href="tasks/{{.Year}}/{{.TaskName}}">`
-	with exception of the first occurence being <a href="tasks/2019/">
+	with exception of the first occurrence being <a href="tasks/2019/">
 */
 
 func extractTaskNames(plainText string, year int) (ans []string) {
@@ -235,7 +235,7 @@ const suffixContestants string = `</a></td>`
 
 /*
 	The `ID` and the `Name` of the contestant can be found only under the format `<a href="people/{{.ID}}">{{.Name}}</a>`
-	with exception of the first occurence being `<a href="people/add">Add</a>`
+	with exception of the first occurrence being `<a href="people/add">Add</a>`
 */
 
 func extractIDName(plainTextSlice string) (ID int, Name string) {

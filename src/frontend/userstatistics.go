@@ -13,6 +13,7 @@ import (
 
 const prefixUserStatistics string = "/UserStatistics/"
 
+//HandleUserStats ... the routing function that finds the statistics of a user
 func HandleUserStats(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		tmpl, err := template.ParseFiles("assets/frontend/userstats.html")

@@ -13,6 +13,7 @@ import (
 
 const prefixCompareUsers string = "/CompareUsers/"
 
+//HandleCompareUsers ... the routing function that compares two users
 func HandleCompareUsers(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		tmpl, err := template.ParseFiles("assets/frontend/userscompare.html")

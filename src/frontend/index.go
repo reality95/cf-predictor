@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+//HandleIndex ... the routing function that implements index page
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("assets/frontend/index.html")
 	if err != nil {

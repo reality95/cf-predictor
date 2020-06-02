@@ -556,7 +556,7 @@ func TestGetUserRatings(t *testing.T) {
 
 	_, err = api.GetUserRatings("000")
 	assert.True(err != nil, "Expected error while extracting the rating changes from user with handle '000'")
-	assert.Equal(err.Error(), "handle: User 000 not found", "Expected a differnt while extracting the rating changes from user with handle '000'")
+	assert.Equal(err.Error(), "handle: User 000 not found", "Expected a different while extracting the rating changes from user with handle '000'")
 
 	time.Sleep(time.Second)
 }
