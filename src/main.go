@@ -9,8 +9,8 @@ import (
 func main() {
 	http.HandleFunc("/UserStatistics/", frontend.HandleUserStats)
 	http.HandleFunc("/CompareUsers/", frontend.HandleCompareUsers)
-	http.HandleFunc("/",frontend.HandleIndex)
-	http.HandleFunc("/Home/",frontend.HandleIndex)
+	http.HandleFunc("/", frontend.HandleIndex)
+	http.HandleFunc("/Home/", frontend.HandleIndex)
 	http.ListenAndServe(":8080", nil)
 	log.Println("Hello word")
 }

@@ -18,8 +18,3 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 
 	tmpl.Execute(w, nil)
 }
-
-type tabIndex struct {
-	UserStats    bool
-	UsersCompare bool
-}

@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"sort"
 	"strings"
 )
 
@@ -28,20 +27,10 @@ func HandleUserStats(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Fprintf(w, "Error while extracting user status %s", err.Error())
 			} else {
-				count := lib.SelectLanguages(submissions, true)
-				lgs := make([]lang, 0)
-				for name, cnt := range count {
-					lgs = append(lgs, lang{
-						Name:  name,
-						Count: cnt,
-					})
-				}
-				sort.SliceStable(lgs, func(i, j int) bool {
-					return lgs[i].Count > lgs[j].Count
-				})
+				Languages := lib.SelectLanguages(submissions, true)
 				tmpl.Execute(w, userStatistics{
 					UserStats: false,
-					Langs:     lgs,
+					Langs:     Languages,
 				})
 			}
 		} else {
@@ -56,12 +45,7 @@ func HandleUserStats(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type lang struct {
-	Name  string
-	Count int
-}
-
 type userStatistics struct {
 	UserStats bool
-	Langs     []lang
+	Langs     []lib.Lang
 }

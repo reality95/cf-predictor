@@ -103,7 +103,6 @@ func HandleCompareUsers(w http.ResponseWriter, r *http.Request) {
 
 			tmpl.Execute(w, data)
 		} else {
-
 			tmpl.Execute(w, compareUsers{
 				CompareUsers: true,
 			})
